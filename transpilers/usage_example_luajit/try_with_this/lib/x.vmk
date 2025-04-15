@@ -1,0 +1,5 @@
+own x = "sukses"
+
+fn x_head()
+	return(str.upper(x))
+end

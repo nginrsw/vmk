@@ -1,0 +1,153 @@
+.\" $Id: vmk.man,v 1.14 2025/04/17 07:48:27 lhf Exp $
+.TH VMK 1 "$Date: 2025/04/15 07:11:27 $"
+.SH NAME
+vmk \- vmk interpreter
+.SH SYNOPSIS
+.B vmk
+[
+.I options
+]
+[
+.I script
+[
+.I args
+]
+]
+.SH DESCRIPTION
+.B vmk
+is the standalone vmk interpreter.
+It loads and executes vmk programs,
+either in textual source form or
+in precompiled binary form.
+(Precompiled binaries are output by
+.BR vmkc ,
+the vmk compiler.)
+.B vmk
+can be used as a batch interpreter and also interactively.
+.LP
+After handling the
+.IR options ,
+the vmk program in file
+.I script
+is loaded and executed.
+The
+.I args
+are available to
+.I script
+as strings in a global table named
+.B arg
+and also as arguments to its main fn.
+When called without arguments,
+.B vmk
+behaves as
+.B "vmk \-v \-i"
+if the standard input is a terminal,
+and as
+.B "vmk \-"
+otherwise.
+.LP
+In interactive mode,
+.B vmk
+prompts the user,
+reads lines from the standard input,
+and executes them as they are read.
+If the line contains an expression,
+then the line is evavmkted and the result is printed.
+If a line does not contain a complete statement,
+then a secondary prompt is displayed and
+lines are read until a complete statement is formed or
+a syntax error is found.
+.LP
+Before handling command line options and scripts,
+.B vmk
+checks the contents of the environment variables
+.B VMK_INIT_5_4
+and
+.BR VMK_INIT ,
+in that order.
+If the contents are of the form
+.RI '@ filename ',
+then
+.I filename
+is executed.
+Otherwise, the contents are assumed to be a vmk statement and is executed.
+When
+.B VMK_INIT_5_4
+is defined,
+.B VMK_INIT
+is ignored.
+.SH OPTIONS
+.TP
+.BI \-e " stat"
+execute statement
+.IR stat .
+.TP
+.B \-i
+enter interactive mode after executing
+.IR script .
+.TP
+.BI \-l " mod"
+require library
+.I mod
+into global
+.IR mod .
+.TP
+.BI \-l " g=mod"
+require library
+.I mod
+into global
+.IR g .
+.TP
+.B \-v
+show version information.
+.TP
+.B \-E
+ignore environment variables.
+.TP
+.B \-W
+turn warnings on.
+.TP
+.B \-\-
+stop handling options.
+.TP
+.B \-
+stop handling options and execute the standard input as a file.
+.SH ENVIRONMENT VARIABLES
+The following environment variables affect the execution of
+.BR vmk .
+When defined,
+the version-specific variants take priority
+and the version-neutral variants are ignored.
+.TP
+.B VMK_INIT, VMK_INIT_5_4
+Code to be executed before command line options and scripts.
+.TP
+.B VMK_PATH, VMK_PATH_5_4
+Initial value of package.path,
+the path used by require to search for vmk loaders.
+.TP
+.B VMK_CPATH, VMK_CPATH_5_4
+Initial value of package.cpath,
+the path used by require to search for C loaders.
+.SH EXIT STATUS
+If a script calls os.exit,
+then
+.B vmk
+exits with the given exit status.
+Otherwise,
+.B vmk
+exits
+with EXIT_SUCCESS (0 on POSIX systems) if there were no errors
+and
+with EXIT_FAILURE (1 on POSIX systems) if there were errors.
+Errors raised in interactive mode do not cause exits.
+.SH DIAGNOSTICS
+Error messages should be self explanatory.
+.SH "SEE ALSO"
+.BR vmkc (1)
+.br
+The documentation at github.com/nginrsw/vmk,
+especially section 7 of the reference manual.
+.SH AUTHORS
+Gillar Ajie Prasatya
+.\" EOF

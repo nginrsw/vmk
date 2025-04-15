@@ -1,0 +1,5 @@
+own y = "SELALU"
+
+fn y_head()
+	return(str.lower(y))
+end

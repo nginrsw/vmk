@@ -1,0 +1,678 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>vmk 0.1 Reference Manual - contents</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="vmk.css">
+<LINK REL="stylesheet" TYPE="text/css" HREF="index.css">
+<META HTTP-EQUIV="content-type" CONTENT="text/html; charset=iso-8859-1">
+</HEAD>
+
+<BODY>
+
+<H1>
+<A HREF="https://github.com/nginrsw/vmk/"><IMG SRC="vmk.png" ALT="vmk"></A>
+vmk 5.4 Reference Manual
+</H1>
+
+<P>
+The reference manual is the official definition of the vmk language.
+<BR>
+For a complete introduction to vmk programming, see the book
+<A HREF="https://github.com/nginrsw/vmk/pil/">Programming in vmk</A>.
+
+<DIV CLASS="menubar">
+<A HREF="manual.html">start</A>
+&middot;
+<A HREF="#contents">contents</A>
+&middot;
+<A HREF="#index">index</A>
+&middot;
+<A HREF="https://github.com/nginrsw/vmk/manual/">other versions</A>
+</DIV>
+
+<P>
+<SMALL>
+Copyright &copy; 2025 github.com/nginrsw/vmk, KRS-Bdg.
+Freely available under the terms of the
+<A HREF="https://github.com/nginrsw/vmk/license.html">vmk license</A>.
+</SMALL>
+
+<H2><A NAME="contents">Contents</A></H2>
+<UL CLASS="contents menubar">
+<LI><A HREF="manual.html">1 &ndash; Introduction</A>
+<P>
+<LI><A HREF="manual.html#2">2 &ndash; Basic Concepts</A>
+<UL>
+<LI><A HREF="manual.html#2.1">2.1 &ndash; Values and Types</A>
+<LI><A HREF="manual.html#2.2">2.2 &ndash; Environments and the Global Environment</A>
+<LI><A HREF="manual.html#2.3">2.3 &ndash; Error Handling</A>
+<LI><A HREF="manual.html#2.4">2.4 &ndash; Metatables and Metamethods</A>
+<LI><A HREF="manual.html#2.5">2.5 &ndash; Garbage Collection</A>
+<UL>
+<LI><A HREF="manual.html#2.5.1">2.5.1 &ndash; Incremental Garbage Collection</A>
+<LI><A HREF="manual.html#2.5.2">2.5.2 &ndash; Generational Garbage Collection</A>
+<LI><A HREF="manual.html#2.5.3">2.5.3 &ndash; Garbage-Collection Metamethods</A>
+<LI><A HREF="manual.html#2.5.4">2.5.4 &ndash; Weak Tables</A>
+</UL>
+<LI><A HREF="manual.html#2.6">2.6 &ndash; Coroutines</A>
+</UL>
+<P>
+<LI><A HREF="manual.html#3">3 &ndash; The Language</A>
+<UL>
+<LI><A HREF="manual.html#3.1">3.1 &ndash; Lexical Conventions</A>
+<LI><A HREF="manual.html#3.2">3.2 &ndash; Variables</A>
+<LI><A HREF="manual.html#3.3">3.3 &ndash; Statements</A>
+<UL>
+<LI><A HREF="manual.html#3.3.1">3.3.1 &ndash; Blocks</A>
+<LI><A HREF="manual.html#3.3.2">3.3.2 &ndash; Chunks</A>
+<LI><A HREF="manual.html#3.3.3">3.3.3 &ndash; Assignment</A>
+<LI><A HREF="manual.html#3.3.4">3.3.4 &ndash; Control Structures</A>
+<LI><A HREF="manual.html#3.3.5">3.3.5 &ndash; For Statement</A>
+<LI><A HREF="manual.html#3.3.6">3.3.6 &ndash; Function Calls as Statements</A>
+<LI><A HREF="manual.html#3.3.7">3.3.7 &ndash; Local Declarations</A>
+<LI><A HREF="manual.html#3.3.8">3.3.8 &ndash; To-be-closed Variables</A>
+</UL>
+<LI><A HREF="manual.html#3.4">3.4 &ndash; Expressions</A>
+<UL>
+<LI><A HREF="manual.html#3.4.1">3.4.1 &ndash; Arithmetic Operators</A>
+<LI><A HREF="manual.html#3.4.2">3.4.2 &ndash; Bitwise Operators</A>
+<LI><A HREF="manual.html#3.4.3">3.4.3 &ndash; Coercions and Conversions</A>
+<LI><A HREF="manual.html#3.4.4">3.4.4 &ndash; Relational Operators</A>
+<LI><A HREF="manual.html#3.4.5">3.4.5 &ndash; Logical Operators</A>
+<LI><A HREF="manual.html#3.4.6">3.4.6 &ndash; Concatenation</A>
+<LI><A HREF="manual.html#3.4.7">3.4.7 &ndash; The Length Operator</A>
+<LI><A HREF="manual.html#3.4.8">3.4.8 &ndash; Precedence</A>
+<LI><A HREF="manual.html#3.4.9">3.4.9 &ndash; Table Constructors</A>
+<LI><A HREF="manual.html#3.4.10">3.4.10 &ndash; Function Calls</A>
+<LI><A HREF="manual.html#3.4.11">3.4.11 &ndash; Function Definitions</A>
+<LI><A HREF="manual.html#3.4.12">3.4.12 &ndash; Lists of expressions, multiple results, and adjustment<A>
+
+</UL>
+<LI><A HREF="manual.html#3.5">3.5 &ndash; Visibility Rules</A>
+</UL>
+<P>
+<LI><A HREF="manual.html#4">4 &ndash; The Application Program Interface</A>
+<UL>
+<LI><A HREF="manual.html#4.1">4.1 &ndash; The Stack</A>
+<UL>
+<LI><A HREF="manual.html#4.1.1">4.1.1 &ndash; Stack Size</A>
+<LI><A HREF="manual.html#4.1.2">4.1.2 &ndash; Valid and Acceptable Indices</A>
+<LI><A HREF="manual.html#4.1.3">4.1.3 &ndash; Pointers to strings</A>
+</UL>
+<LI><A HREF="manual.html#4.2">4.2 &ndash; C Closures</A>
+<LI><A HREF="manual.html#4.3">4.3 &ndash; Registry</A>
+<LI><A HREF="manual.html#4.4">4.4 &ndash; Error Handling in C</A>
+<UL>
+<LI><A HREF="manual.html#4.4.1">4.4.1 &ndash; Status Codes</A>
+</UL>
+<LI><A HREF="manual.html#4.5">4.5 &ndash; Handling Yields in C</A>
+<LI><A HREF="manual.html#4.6">4.6 &ndash; Functions and Types</A>
+<LI><A HREF="manual.html#4.7">4.7 &ndash; The Debug Interface</A>
+</UL>
+<P>
+<LI><A HREF="manual.html#5">5 &ndash; The Auxiliary Library</A>
+<UL>
+<LI><A HREF="manual.html#5.1">5.1 &ndash; Functions and Types</A>
+</UL>
+<P>
+<LI><A HREF="manual.html#6">6 &ndash; The Standard Libraries</A>
+<UL>
+<LI><A HREF="manual.html#6.1">6.1 &ndash; Basic Functions</A>
+<LI><A HREF="manual.html#6.2">6.2 &ndash; Coroutine Manipulation</A>
+<LI><A HREF="manual.html#6.3">6.3 &ndash; Modules</A>
+<LI><A HREF="manual.html#6.4">6.4 &ndash; String Manipulation</A>
+<UL>
+<LI><A HREF="manual.html#6.4.1">6.4.1 &ndash; Patterns</A>
+<LI><A HREF="manual.html#6.4.2">6.4.2 &ndash; Format Strings for Pack and Unpack</A>
+</UL>
+<LI><A HREF="manual.html#6.5">6.5 &ndash; UTF-8 Support</A>
+<LI><A HREF="manual.html#6.6">6.6 &ndash; Table Manipulation</A>
+<LI><A HREF="manual.html#6.7">6.7 &ndash; Mathematical Functions</A>
+<LI><A HREF="manual.html#6.8">6.8 &ndash; Input and Output Facilities</A>
+<LI><A HREF="manual.html#6.9">6.9 &ndash; Operating System Facilities</A>
+<LI><A HREF="manual.html#6.10">6.10 &ndash; The Debug Library</A>
+</UL>
+<P>
+<LI><A HREF="manual.html#7">7 &ndash; vmk Standalone</A>
+<P>
+<LI><A HREF="manual.html#8">8 &ndash; Incompatibilities with the Previous Version</A>
+<UL>
+<LI><A HREF="manual.html#8.1">8.1 &ndash; Incompatibilities in the Language</A>
+<LI><A HREF="manual.html#8.2">8.2 &ndash; Incompatibilities in the Libraries</A>
+<LI><A HREF="manual.html#8.3">8.3 &ndash; Incompatibilities in the API</A>
+</UL>
+<P>
+<LI><A HREF="manual.html#9">9 &ndash; The Complete Syntax of vmk</A>
+</UL>
+
+<H2><A NAME="index">Index</A></H2>
+<TABLE CLASS="menubar" WIDTH="100%">
+<TR>
+<TD>
+<H3><A NAME="functions">vmk functions</A></H3>
+<P>
+<A HREF="manual.html#6.1">basic</A><BR>
+<A HREF="manual.html#pdf-_G">_G</A><BR>
+<A HREF="manual.html#pdf-_VERSION">_VERSION</A><BR>
+<A HREF="manual.html#pdf-assert">assert</A><BR>
+<A HREF="manual.html#pdf-collectgarbage">collectgarbage</A><BR>
+<A HREF="manual.html#pdf-dofile">dofile</A><BR>
+<A HREF="manual.html#pdf-error">error</A><BR>
+<A HREF="manual.html#pdf-getmetatable">getmetatable</A><BR>
+<A HREF="manual.html#pdf-ipairs">ipairs</A><BR>
+<A HREF="manual.html#pdf-load">load</A><BR>
+<A HREF="manual.html#pdf-loadfile">loadfile</A><BR>
+<A HREF="manual.html#pdf-next">next</A><BR>
+<A HREF="manual.html#pdf-pairs">pairs</A><BR>
+<A HREF="manual.html#pdf-pcall">pcall</A><BR>
+<A HREF="manual.html#pdf-print">print</A><BR>
+<A HREF="manual.html#pdf-rawequal">rawequal</A><BR>
+<A HREF="manual.html#pdf-rawget">rawget</A><BR>
+<A HREF="manual.html#pdf-rawlen">rawlen</A><BR>
+<A HREF="manual.html#pdf-rawset">rawset</A><BR>
+<A HREF="manual.html#pdf-require">require</A><BR>
+<A HREF="manual.html#pdf-select">select</A><BR>
+<A HREF="manual.html#pdf-setmetatable">setmetatable</A><BR>
+<A HREF="manual.html#pdf-tonumber">tonumber</A><BR>
+<A HREF="manual.html#pdf-tostring">tostring</A><BR>
+<A HREF="manual.html#pdf-type">type</A><BR>
+<A HREF="manual.html#pdf-warn">warn</A><BR>
+<A HREF="manual.html#pdf-xpcall">xpcall</A><BR>
+
+<P>
+<A HREF="manual.html#6.2">coroutine</A><BR>
+<A HREF="manual.html#pdf-coroutine.close">coroutine.close</A><BR>
+<A HREF="manual.html#pdf-coroutine.create">coroutine.create</A><BR>
+<A HREF="manual.html#pdf-coroutine.isyieldable">coroutine.isyieldable</A><BR>
+<A HREF="manual.html#pdf-coroutine.resume">coroutine.resume</A><BR>
+<A HREF="manual.html#pdf-coroutine.running">coroutine.running</A><BR>
+<A HREF="manual.html#pdf-coroutine.status">coroutine.status</A><BR>
+<A HREF="manual.html#pdf-coroutine.wrap">coroutine.wrap</A><BR>
+<A HREF="manual.html#pdf-coroutine.yield">coroutine.yield</A><BR>
+
+<P>
+<A HREF="manual.html#6.10">debug</A><BR>
+<A HREF="manual.html#pdf-debug.debug">debug.debug</A><BR>
+<A HREF="manual.html#pdf-debug.gethook">debug.gethook</A><BR>
+<A HREF="manual.html#pdf-debug.getinfo">debug.getinfo</A><BR>
+<A HREF="manual.html#pdf-debug.getlocal">debug.getlocal</A><BR>
+<A HREF="manual.html#pdf-debug.getmetatable">debug.getmetatable</A><BR>
+<A HREF="manual.html#pdf-debug.getregistry">debug.getregistry</A><BR>
+<A HREF="manual.html#pdf-debug.getupvalue">debug.getupvalue</A><BR>
+<A HREF="manual.html#pdf-debug.getuservalue">debug.getuservalue</A><BR>
+<A HREF="manual.html#pdf-debug.sethook">debug.sethook</A><BR>
+<A HREF="manual.html#pdf-debug.setlocal">debug.setlocal</A><BR>
+<A HREF="manual.html#pdf-debug.setmetatable">debug.setmetatable</A><BR>
+<A HREF="manual.html#pdf-debug.setupvalue">debug.setupvalue</A><BR>
+<A HREF="manual.html#pdf-debug.setuservalue">debug.setuservalue</A><BR>
+<A HREF="manual.html#pdf-debug.traceback">debug.traceback</A><BR>
+<A HREF="manual.html#pdf-debug.upvalueid">debug.upvalueid</A><BR>
+<A HREF="manual.html#pdf-debug.upvaluejoin">debug.upvaluejoin</A><BR>
+
+<P>
+<A HREF="manual.html#6.8">io</A><BR>
+<A HREF="manual.html#pdf-io.close">io.close</A><BR>
+<A HREF="manual.html#pdf-io.flush">io.flush</A><BR>
+<A HREF="manual.html#pdf-io.input">io.input</A><BR>
+<A HREF="manual.html#pdf-io.lines">io.lines</A><BR>
+<A HREF="manual.html#pdf-io.open">io.open</A><BR>
+<A HREF="manual.html#pdf-io.output">io.output</A><BR>
+<A HREF="manual.html#pdf-io.popen">io.popen</A><BR>
+<A HREF="manual.html#pdf-io.read">io.read</A><BR>
+<A HREF="manual.html#pdf-io.stderr">io.stderr</A><BR>
+<A HREF="manual.html#pdf-io.stdin">io.stdin</A><BR>
+<A HREF="manual.html#pdf-io.stdout">io.stdout</A><BR>
+<A HREF="manual.html#pdf-io.tmpfile">io.tmpfile</A><BR>
+<A HREF="manual.html#pdf-io.type">io.type</A><BR>
+<A HREF="manual.html#pdf-io.write">io.write</A><BR>
+
+<A HREF="manual.html#pdf-file:close">file:close</A><BR>
+<A HREF="manual.html#pdf-file:flush">file:flush</A><BR>
+<A HREF="manual.html#pdf-file:lines">file:lines</A><BR>
+<A HREF="manual.html#pdf-file:read">file:read</A><BR>
+<A HREF="manual.html#pdf-file:seek">file:seek</A><BR>
+<A HREF="manual.html#pdf-file:setvbuf">file:setvbuf</A><BR>
+<A HREF="manual.html#pdf-file:write">file:write</A><BR>
+
+</TD>
+<TD>
+<H3>&nbsp;</H3>
+<P>
+<A HREF="manual.html#6.7">math</A><BR>
+<A HREF="manual.html#pdf-math.abs">math.abs</A><BR>
+<A HREF="manual.html#pdf-math.acos">math.acos</A><BR>
+<A HREF="manual.html#pdf-math.asin">math.asin</A><BR>
+<A HREF="manual.html#pdf-math.atan">math.atan</A><BR>
+<A HREF="manual.html#pdf-math.ceil">math.ceil</A><BR>
+<A HREF="manual.html#pdf-math.cos">math.cos</A><BR>
+<A HREF="manual.html#pdf-math.deg">math.deg</A><BR>
+<A HREF="manual.html#pdf-math.exp">math.exp</A><BR>
+<A HREF="manual.html#pdf-math.floor">math.floor</A><BR>
+<A HREF="manual.html#pdf-math.fmod">math.fmod</A><BR>
+<A HREF="manual.html#pdf-math.huge">math.huge</A><BR>
+<A HREF="manual.html#pdf-math.log">math.log</A><BR>
+<A HREF="manual.html#pdf-math.max">math.max</A><BR>
+<A HREF="manual.html#pdf-math.maxinteger">math.maxinteger</A><BR>
+<A HREF="manual.html#pdf-math.min">math.min</A><BR>
+<A HREF="manual.html#pdf-math.mininteger">math.mininteger</A><BR>
+<A HREF="manual.html#pdf-math.modf">math.modf</A><BR>
+<A HREF="manual.html#pdf-math.pi">math.pi</A><BR>
+<A HREF="manual.html#pdf-math.rad">math.rad</A><BR>
+<A HREF="manual.html#pdf-math.random">math.random</A><BR>
+<A HREF="manual.html#pdf-math.randomseed">math.randomseed</A><BR>
+<A HREF="manual.html#pdf-math.sin">math.sin</A><BR>
+<A HREF="manual.html#pdf-math.sqrt">math.sqrt</A><BR>
+<A HREF="manual.html#pdf-math.tan">math.tan</A><BR>
+<A HREF="manual.html#pdf-math.tointeger">math.tointeger</A><BR>
+<A HREF="manual.html#pdf-math.type">math.type</A><BR>
+<A HREF="manual.html#pdf-math.ult">math.ult</A><BR>
+
+<P>
+<A HREF="manual.html#6.9">os</A><BR>
+<A HREF="manual.html#pdf-os.clock">os.clock</A><BR>
+<A HREF="manual.html#pdf-os.date">os.date</A><BR>
+<A HREF="manual.html#pdf-os.difftime">os.difftime</A><BR>
+<A HREF="manual.html#pdf-os.execute">os.execute</A><BR>
+<A HREF="manual.html#pdf-os.exit">os.exit</A><BR>
+<A HREF="manual.html#pdf-os.getenv">os.getenv</A><BR>
+<A HREF="manual.html#pdf-os.remove">os.remove</A><BR>
+<A HREF="manual.html#pdf-os.rename">os.rename</A><BR>
+<A HREF="manual.html#pdf-os.setlocale">os.setlocale</A><BR>
+<A HREF="manual.html#pdf-os.time">os.time</A><BR>
+<A HREF="manual.html#pdf-os.tmpname">os.tmpname</A><BR>
+
+<P>
+<A HREF="manual.html#6.3">package</A><BR>
+<A HREF="manual.html#pdf-package.config">package.config</A><BR>
+<A HREF="manual.html#pdf-package.cpath">package.cpath</A><BR>
+<A HREF="manual.html#pdf-package.loaded">package.loaded</A><BR>
+<A HREF="manual.html#pdf-package.loadlib">package.loadlib</A><BR>
+<A HREF="manual.html#pdf-package.path">package.path</A><BR>
+<A HREF="manual.html#pdf-package.preload">package.preload</A><BR>
+<A HREF="manual.html#pdf-package.searchers">package.searchers</A><BR>
+<A HREF="manual.html#pdf-package.searchpath">package.searchpath</A><BR>
+
+<P>
+<A HREF="manual.html#6.4">string</A><BR>
+<A HREF="manual.html#pdf-string.byte">string.byte</A><BR>
+<A HREF="manual.html#pdf-string.char">string.char</A><BR>
+<A HREF="manual.html#pdf-string.dump">string.dump</A><BR>
+<A HREF="manual.html#pdf-string.find">string.find</A><BR>
+<A HREF="manual.html#pdf-string.format">string.format</A><BR>
+<A HREF="manual.html#pdf-string.gmatch">string.gmatch</A><BR>
+<A HREF="manual.html#pdf-string.gsub">string.gsub</A><BR>
+<A HREF="manual.html#pdf-string.len">string.len</A><BR>
+<A HREF="manual.html#pdf-string.lower">string.lower</A><BR>
+<A HREF="manual.html#pdf-string.match">string.match</A><BR>
+<A HREF="manual.html#pdf-string.pack">string.pack</A><BR>
+<A HREF="manual.html#pdf-string.packsize">string.packsize</A><BR>
+<A HREF="manual.html#pdf-string.rep">string.rep</A><BR>
+<A HREF="manual.html#pdf-string.reverse">string.reverse</A><BR>
+<A HREF="manual.html#pdf-string.sub">string.sub</A><BR>
+<A HREF="manual.html#pdf-string.unpack">string.unpack</A><BR>
+<A HREF="manual.html#pdf-string.upper">string.upper</A><BR>
+
+<P>
+<A HREF="manual.html#6.6">table</A><BR>
+<A HREF="manual.html#pdf-table.concat">table.concat</A><BR>
+<A HREF="manual.html#pdf-table.insert">table.insert</A><BR>
+<A HREF="manual.html#pdf-table.move">table.move</A><BR>
+<A HREF="manual.html#pdf-table.pack">table.pack</A><BR>
+<A HREF="manual.html#pdf-table.remove">table.remove</A><BR>
+<A HREF="manual.html#pdf-table.sort">table.sort</A><BR>
+<A HREF="manual.html#pdf-table.unpack">table.unpack</A><BR>
+
+<P>
+<A HREF="manual.html#6.5">utf8</A><BR>
+<A HREF="manual.html#pdf-utf8.char">utf8.char</A><BR>
+<A HREF="manual.html#pdf-utf8.charpattern">utf8.charpattern</A><BR>
+<A HREF="manual.html#pdf-utf8.codepoint">utf8.codepoint</A><BR>
+<A HREF="manual.html#pdf-utf8.codes">utf8.codes</A><BR>
+<A HREF="manual.html#pdf-utf8.len">utf8.len</A><BR>
+<A HREF="manual.html#pdf-utf8.offset">utf8.offset</A><BR>
+
+<H3><A NAME="metamethods">metamethods</A></H3>
+<P>
+<A HREF="manual.html#2.4">__add</A><BR>
+<A HREF="manual.html#2.4">__band</A><BR>
+<A HREF="manual.html#2.4">__bnot</A><BR>
+<A HREF="manual.html#2.4">__bor</A><BR>
+<A HREF="manual.html#2.4">__bxor</A><BR>
+<A HREF="manual.html#2.4">__call</A><BR>
+<A HREF="manual.html#3.3.8">__close</A><BR>
+<A HREF="manual.html#2.4">__concat</A><BR>
+<A HREF="manual.html#2.4">__div</A><BR>
+<A HREF="manual.html#2.4">__eq</A><BR>
+<A HREF="manual.html#2.5.3">__gc</A><BR>
+<A HREF="manual.html#2.4">__idiv</A><BR>
+<A HREF="manual.html#2.4">__index</A><BR>
+<A HREF="manual.html#2.4">__le</A><BR>
+<A HREF="manual.html#2.4">__len</A><BR>
+<A HREF="manual.html#2.4">__lt</A><BR>
+<A HREF="manual.html#pdf-getmetatable">__metatable</A><BR>
+<A HREF="manual.html#2.4">__mod</A><BR>
+<A HREF="manual.html#2.5.4">__mode</A><BR>
+<A HREF="manual.html#2.4">__mul</A><BR>
+<A HREF="manual.html#vmkL_newmetatable">__name</A><BR>
+<A HREF="manual.html#2.4">__newindex</A><BR>
+<A HREF="manual.html#pdf-pairs">__pairs</A><BR>
+<A HREF="manual.html#2.4">__pow</A><BR>
+<A HREF="manual.html#2.4">__shl</A><BR>
+<A HREF="manual.html#2.4">__shr</A><BR>
+<A HREF="manual.html#2.4">__sub</A><BR>
+<A HREF="manual.html#pdf-tostring">__tostring</A><BR>
+<A HREF="manual.html#2.4">__unm</A><BR>
+
+<H3><A NAME="env">environment<BR>variables</A></H3>
+<P>
+<A HREF="manual.html#pdf-VMK_CPATH">VMK_CPATH</A><BR>
+<A HREF="manual.html#pdf-VMK_CPATH_5_4">VMK_CPATH_5_4</A><BR>
+<A HREF="manual.html#pdf-VMK_INIT">VMK_INIT</A><BR>
+<A HREF="manual.html#pdf-VMK_INIT_5_4">VMK_INIT_5_4</A><BR>
+<A HREF="manual.html#pdf-VMK_PATH">VMK_PATH</A><BR>
+<A HREF="manual.html#pdf-VMK_PATH_5_4">VMK_PATH_5_4</A><BR>
+
+</TD>
+<TD>
+<H3><A NAME="api">C API</A></H3>
+<P>
+<A HREF="manual.html#vmk_Alloc">vmk_Alloc</A><BR>
+<A HREF="manual.html#vmk_CFunction">vmk_CFunction</A><BR>
+<A HREF="manual.html#vmk_Debug">vmk_Debug</A><BR>
+<A HREF="manual.html#vmk_Hook">vmk_Hook</A><BR>
+<A HREF="manual.html#vmk_Integer">vmk_Integer</A><BR>
+<A HREF="manual.html#vmk_KContext">vmk_KContext</A><BR>
+<A HREF="manual.html#vmk_KFunction">vmk_KFunction</A><BR>
+<A HREF="manual.html#vmk_Number">vmk_Number</A><BR>
+<A HREF="manual.html#vmk_Reader">vmk_Reader</A><BR>
+<A HREF="manual.html#vmk_State">vmk_State</A><BR>
+<A HREF="manual.html#vmk_Unsigned">vmk_Unsigned</A><BR>
+<A HREF="manual.html#vmk_WarnFunction">vmk_WarnFunction</A><BR>
+<A HREF="manual.html#vmk_Writer">vmk_Writer</A><BR>
+
+<P>
+<A HREF="manual.html#vmk_absindex">vmk_absindex</A><BR>
+<A HREF="manual.html#vmk_arith">vmk_arith</A><BR>
+<A HREF="manual.html#vmk_atpanic">vmk_atpanic</A><BR>
+<A HREF="manual.html#vmk_call">vmk_call</A><BR>
+<A HREF="manual.html#vmk_callk">vmk_callk</A><BR>
+<A HREF="manual.html#vmk_checkstack">vmk_checkstack</A><BR>
+<A HREF="manual.html#vmk_close">vmk_close</A><BR>
+<A HREF="manual.html#vmk_closeslot">vmk_closeslot</A><BR>
+<A HREF="manual.html#vmk_compare">vmk_compare</A><BR>
+<A HREF="manual.html#vmk_concat">vmk_concat</A><BR>
+<A HREF="manual.html#vmk_copy">vmk_copy</A><BR>
+<A HREF="manual.html#vmk_createtable">vmk_createtable</A><BR>
+<A HREF="manual.html#vmk_dump">vmk_dump</A><BR>
+<A HREF="manual.html#vmk_error">vmk_error</A><BR>
+<A HREF="manual.html#vmk_gc">vmk_gc</A><BR>
+<A HREF="manual.html#vmk_getallocf">vmk_getallocf</A><BR>
+<A HREF="manual.html#vmk_getextraspace">vmk_getextraspace</A><BR>
+<A HREF="manual.html#vmk_getfield">vmk_getfield</A><BR>
+<A HREF="manual.html#vmk_getglobal">vmk_getglobal</A><BR>
+<A HREF="manual.html#vmk_gethook">vmk_gethook</A><BR>
+<A HREF="manual.html#vmk_gethookcount">vmk_gethookcount</A><BR>
+<A HREF="manual.html#vmk_gethookmask">vmk_gethookmask</A><BR>
+<A HREF="manual.html#vmk_geti">vmk_geti</A><BR>
+<A HREF="manual.html#vmk_getinfo">vmk_getinfo</A><BR>
+<A HREF="manual.html#vmk_getiuservalue">vmk_getiuservalue</A><BR>
+<A HREF="manual.html#vmk_getlocal">vmk_getlocal</A><BR>
+<A HREF="manual.html#vmk_getmetatable">vmk_getmetatable</A><BR>
+<A HREF="manual.html#vmk_getstack">vmk_getstack</A><BR>
+<A HREF="manual.html#vmk_gettable">vmk_gettable</A><BR>
+<A HREF="manual.html#vmk_gettop">vmk_gettop</A><BR>
+<A HREF="manual.html#vmk_getupvalue">vmk_getupvalue</A><BR>
+<A HREF="manual.html#vmk_insert">vmk_insert</A><BR>
+<A HREF="manual.html#vmk_isboolean">vmk_isboolean</A><BR>
+<A HREF="manual.html#vmk_iscfunction">vmk_iscfunction</A><BR>
+<A HREF="manual.html#vmk_isfunction">vmk_isfunction</A><BR>
+<A HREF="manual.html#vmk_isinteger">vmk_isinteger</A><BR>
+<A HREF="manual.html#vmk_islightuserdata">vmk_islightuserdata</A><BR>
+<A HREF="manual.html#vmk_isnil">vmk_isnil</A><BR>
+<A HREF="manual.html#vmk_isnone">vmk_isnone</A><BR>
+<A HREF="manual.html#vmk_isnoneornil">vmk_isnoneornil</A><BR>
+<A HREF="manual.html#vmk_isnumber">vmk_isnumber</A><BR>
+<A HREF="manual.html#vmk_isstring">vmk_isstring</A><BR>
+<A HREF="manual.html#vmk_istable">vmk_istable</A><BR>
+<A HREF="manual.html#vmk_isthread">vmk_isthread</A><BR>
+<A HREF="manual.html#vmk_isuserdata">vmk_isuserdata</A><BR>
+<A HREF="manual.html#vmk_isyieldable">vmk_isyieldable</A><BR>
+<A HREF="manual.html#vmk_len">vmk_len</A><BR>
+<A HREF="manual.html#vmk_load">vmk_load</A><BR>
+<A HREF="manual.html#vmk_newstate">vmk_newstate</A><BR>
+<A HREF="manual.html#vmk_newtable">vmk_newtable</A><BR>
+<A HREF="manual.html#vmk_newthread">vmk_newthread</A><BR>
+<A HREF="manual.html#vmk_newuserdatauv">vmk_newuserdatauv</A><BR>
+<A HREF="manual.html#vmk_next">vmk_next</A><BR>
+<A HREF="manual.html#vmk_numbertointeger">vmk_numbertointeger</A><BR>
+<A HREF="manual.html#vmk_pcall">vmk_pcall</A><BR>
+<A HREF="manual.html#vmk_pcallk">vmk_pcallk</A><BR>
+<A HREF="manual.html#vmk_pop">vmk_pop</A><BR>
+<A HREF="manual.html#vmk_pushboolean">vmk_pushboolean</A><BR>
+<A HREF="manual.html#vmk_pushcclosure">vmk_pushcclosure</A><BR>
+<A HREF="manual.html#vmk_pushcfunction">vmk_pushcfunction</A><BR>
+<A HREF="manual.html#vmk_pushfstring">vmk_pushfstring</A><BR>
+<A HREF="manual.html#vmk_pushglobaltable">vmk_pushglobaltable</A><BR>
+<A HREF="manual.html#vmk_pushinteger">vmk_pushinteger</A><BR>
+<A HREF="manual.html#vmk_pushlightuserdata">vmk_pushlightuserdata</A><BR>
+<A HREF="manual.html#vmk_pushliteral">vmk_pushliteral</A><BR>
+<A HREF="manual.html#vmk_pushlstring">vmk_pushlstring</A><BR>
+<A HREF="manual.html#vmk_pushnil">vmk_pushnil</A><BR>
+<A HREF="manual.html#vmk_pushnumber">vmk_pushnumber</A><BR>
+<A HREF="manual.html#vmk_pushstring">vmk_pushstring</A><BR>
+<A HREF="manual.html#vmk_pushthread">vmk_pushthread</A><BR>
+<A HREF="manual.html#vmk_pushvalue">vmk_pushvalue</A><BR>
+<A HREF="manual.html#vmk_pushvfstring">vmk_pushvfstring</A><BR>
+<A HREF="manual.html#vmk_rawequal">vmk_rawequal</A><BR>
+<A HREF="manual.html#vmk_rawget">vmk_rawget</A><BR>
+<A HREF="manual.html#vmk_rawgeti">vmk_rawgeti</A><BR>
+<A HREF="manual.html#vmk_rawgetp">vmk_rawgetp</A><BR>
+<A HREF="manual.html#vmk_rawlen">vmk_rawlen</A><BR>
+<A HREF="manual.html#vmk_rawset">vmk_rawset</A><BR>
+<A HREF="manual.html#vmk_rawseti">vmk_rawseti</A><BR>
+<A HREF="manual.html#vmk_rawsetp">vmk_rawsetp</A><BR>
+<A HREF="manual.html#vmk_register">vmk_register</A><BR>
+<A HREF="manual.html#vmk_remove">vmk_remove</A><BR>
+<A HREF="manual.html#vmk_replace">vmk_replace</A><BR>
+<A HREF="manual.html#vmk_resetthread">vmk_resetthread</A><BR>
+<A HREF="manual.html#vmk_resume">vmk_resume</A><BR>
+<A HREF="manual.html#vmk_rotate">vmk_rotate</A><BR>
+<A HREF="manual.html#vmk_setallocf">vmk_setallocf</A><BR>
+<A HREF="manual.html#vmk_setfield">vmk_setfield</A><BR>
+<A HREF="manual.html#vmk_setglobal">vmk_setglobal</A><BR>
+<A HREF="manual.html#vmk_sethook">vmk_sethook</A><BR>
+<A HREF="manual.html#vmk_seti">vmk_seti</A><BR>
+<A HREF="manual.html#vmk_setiuservalue">vmk_setiuservalue</A><BR>
+<A HREF="manual.html#vmk_setlocal">vmk_setlocal</A><BR>
+<A HREF="manual.html#vmk_setmetatable">vmk_setmetatable</A><BR>
+<A HREF="manual.html#vmk_settable">vmk_settable</A><BR>
+<A HREF="manual.html#vmk_settop">vmk_settop</A><BR>
+<A HREF="manual.html#vmk_setupvalue">vmk_setupvalue</A><BR>
+<A HREF="manual.html#vmk_setwarnf">vmk_setwarnf</A><BR>
+<A HREF="manual.html#vmk_status">vmk_status</A><BR>
+<A HREF="manual.html#vmk_stringtonumber">vmk_stringtonumber</A><BR>
+<A HREF="manual.html#vmk_toboolean">vmk_toboolean</A><BR>
+<A HREF="manual.html#vmk_tocfunction">vmk_tocfunction</A><BR>
+<A HREF="manual.html#vmk_toclose">vmk_toclose</A><BR>
+<A HREF="manual.html#vmk_tointeger">vmk_tointeger</A><BR>
+<A HREF="manual.html#vmk_tointegerx">vmk_tointegerx</A><BR>
+<A HREF="manual.html#vmk_tolstring">vmk_tolstring</A><BR>
+<A HREF="manual.html#vmk_tonumber">vmk_tonumber</A><BR>
+<A HREF="manual.html#vmk_tonumberx">vmk_tonumberx</A><BR>
+<A HREF="manual.html#vmk_topointer">vmk_topointer</A><BR>
+<A HREF="manual.html#vmk_tostring">vmk_tostring</A><BR>
+<A HREF="manual.html#vmk_tothread">vmk_tothread</A><BR>
+<A HREF="manual.html#vmk_touserdata">vmk_touserdata</A><BR>
+<A HREF="manual.html#vmk_type">vmk_type</A><BR>
+<A HREF="manual.html#vmk_typename">vmk_typename</A><BR>
+<A HREF="manual.html#vmk_upvalueid">vmk_upvalueid</A><BR>
+<A HREF="manual.html#vmk_upvalueindex">vmk_upvalueindex</A><BR>
+<A HREF="manual.html#vmk_upvaluejoin">vmk_upvaluejoin</A><BR>
+<A HREF="manual.html#vmk_version">vmk_version</A><BR>
+<A HREF="manual.html#vmk_warning">vmk_warning</A><BR>
+<A HREF="manual.html#vmk_xmove">vmk_xmove</A><BR>
+<A HREF="manual.html#vmk_yield">vmk_yield</A><BR>
+<A HREF="manual.html#vmk_yieldk">vmk_yieldk</A><BR>
+
+</TD>
+<TD>
+<H3><A NAME="auxlib">auxiliary library</A></H3>
+<P>
+<A HREF="manual.html#vmkL_Buffer">vmkL_Buffer</A><BR>
+<A HREF="manual.html#vmkL_Reg">vmkL_Reg</A><BR>
+<A HREF="manual.html#vmkL_Stream">vmkL_Stream</A><BR>
+
+<P>
+<A HREF="manual.html#vmkL_addchar">vmkL_addchar</A><BR>
+<A HREF="manual.html#vmkL_addgsub">vmkL_addgsub</A><BR>
+<A HREF="manual.html#vmkL_addlstring">vmkL_addlstring</A><BR>
+<A HREF="manual.html#vmkL_addsize">vmkL_addsize</A><BR>
+<A HREF="manual.html#vmkL_addstring">vmkL_addstring</A><BR>
+<A HREF="manual.html#vmkL_addvalue">vmkL_addvalue</A><BR>
+<A HREF="manual.html#vmkL_argcheck">vmkL_argcheck</A><BR>
+<A HREF="manual.html#vmkL_argerror">vmkL_argerror</A><BR>
+<A HREF="manual.html#vmkL_argexpected">vmkL_argexpected</A><BR>
+<A HREF="manual.html#vmkL_buffaddr">vmkL_buffaddr</A><BR>
+<A HREF="manual.html#vmkL_buffinit">vmkL_buffinit</A><BR>
+<A HREF="manual.html#vmkL_buffinitsize">vmkL_buffinitsize</A><BR>
+<A HREF="manual.html#vmkL_bufflen">vmkL_bufflen</A><BR>
+<A HREF="manual.html#vmkL_buffsub">vmkL_buffsub</A><BR>
+<A HREF="manual.html#vmkL_callmeta">vmkL_callmeta</A><BR>
+<A HREF="manual.html#vmkL_checkany">vmkL_checkany</A><BR>
+<A HREF="manual.html#vmkL_checkinteger">vmkL_checkinteger</A><BR>
+<A HREF="manual.html#vmkL_checklstring">vmkL_checklstring</A><BR>
+<A HREF="manual.html#vmkL_checknumber">vmkL_checknumber</A><BR>
+<A HREF="manual.html#vmkL_checkoption">vmkL_checkoption</A><BR>
+<A HREF="manual.html#vmkL_checkstack">vmkL_checkstack</A><BR>
+<A HREF="manual.html#vmkL_checkstring">vmkL_checkstring</A><BR>
+<A HREF="manual.html#vmkL_checktype">vmkL_checktype</A><BR>
+<A HREF="manual.html#vmkL_checkudata">vmkL_checkudata</A><BR>
+<A HREF="manual.html#vmkL_checkversion">vmkL_checkversion</A><BR>
+<A HREF="manual.html#vmkL_dofile">vmkL_dofile</A><BR>
+<A HREF="manual.html#vmkL_dostring">vmkL_dostring</A><BR>
+<A HREF="manual.html#vmkL_error">vmkL_error</A><BR>
+<A HREF="manual.html#vmkL_execresult">vmkL_execresult</A><BR>
+<A HREF="manual.html#vmkL_fileresult">vmkL_fileresult</A><BR>
+<A HREF="manual.html#vmkL_getmetafield">vmkL_getmetafield</A><BR>
+<A HREF="manual.html#vmkL_getmetatable">vmkL_getmetatable</A><BR>
+<A HREF="manual.html#vmkL_getsubtable">vmkL_getsubtable</A><BR>
+<A HREF="manual.html#vmkL_gsub">vmkL_gsub</A><BR>
+<A HREF="manual.html#vmkL_len">vmkL_len</A><BR>
+<A HREF="manual.html#vmkL_loadbuffer">vmkL_loadbuffer</A><BR>
+<A HREF="manual.html#vmkL_loadbufferx">vmkL_loadbufferx</A><BR>
+<A HREF="manual.html#vmkL_loadfile">vmkL_loadfile</A><BR>
+<A HREF="manual.html#vmkL_loadfilex">vmkL_loadfilex</A><BR>
+<A HREF="manual.html#vmkL_loadstring">vmkL_loadstring</A><BR>
+<A HREF="manual.html#vmkL_newlib">vmkL_newlib</A><BR>
+<A HREF="manual.html#vmkL_newlibtable">vmkL_newlibtable</A><BR>
+<A HREF="manual.html#vmkL_newmetatable">vmkL_newmetatable</A><BR>
+<A HREF="manual.html#vmkL_newstate">vmkL_newstate</A><BR>
+<A HREF="manual.html#vmkL_openlibs">vmkL_openlibs</A><BR>
+<A HREF="manual.html#vmkL_opt">vmkL_opt</A><BR>
+<A HREF="manual.html#vmkL_optinteger">vmkL_optinteger</A><BR>
+<A HREF="manual.html#vmkL_optlstring">vmkL_optlstring</A><BR>
+<A HREF="manual.html#vmkL_optnumber">vmkL_optnumber</A><BR>
+<A HREF="manual.html#vmkL_optstring">vmkL_optstring</A><BR>
+<A HREF="manual.html#vmkL_prepbuffer">vmkL_prepbuffer</A><BR>
+<A HREF="manual.html#vmkL_prepbuffsize">vmkL_prepbuffsize</A><BR>
+<A HREF="manual.html#vmkL_pushfail">vmkL_pushfail</A><BR>
+<A HREF="manual.html#vmkL_pushresult">vmkL_pushresult</A><BR>
+<A HREF="manual.html#vmkL_pushresultsize">vmkL_pushresultsize</A><BR>
+<A HREF="manual.html#vmkL_ref">vmkL_ref</A><BR>
+<A HREF="manual.html#vmkL_requiref">vmkL_requiref</A><BR>
+<A HREF="manual.html#vmkL_setfuncs">vmkL_setfuncs</A><BR>
+<A HREF="manual.html#vmkL_setmetatable">vmkL_setmetatable</A><BR>
+<A HREF="manual.html#vmkL_testudata">vmkL_testudata</A><BR>
+<A HREF="manual.html#vmkL_tolstring">vmkL_tolstring</A><BR>
+<A HREF="manual.html#vmkL_traceback">vmkL_traceback</A><BR>
+<A HREF="manual.html#vmkL_typeerror">vmkL_typeerror</A><BR>
+<A HREF="manual.html#vmkL_typename">vmkL_typename</A><BR>
+<A HREF="manual.html#vmkL_unref">vmkL_unref</A><BR>
+<A HREF="manual.html#vmkL_where">vmkL_where</A><BR>
+
+<H3><A NAME="library">standard library</A></H3>
+<P>
+<A HREF="manual.html#pdf-vmkopen_base">vmkopen_base</A><BR>
+<A HREF="manual.html#pdf-vmkopen_coroutine">vmkopen_coroutine</A><BR>
+<A HREF="manual.html#pdf-vmkopen_debug">vmkopen_debug</A><BR>
+<A HREF="manual.html#pdf-vmkopen_io">vmkopen_io</A><BR>
+<A HREF="manual.html#pdf-vmkopen_math">vmkopen_math</A><BR>
+<A HREF="manual.html#pdf-vmkopen_os">vmkopen_os</A><BR>
+<A HREF="manual.html#pdf-vmkopen_package">vmkopen_package</A><BR>
+<A HREF="manual.html#pdf-vmkopen_string">vmkopen_string</A><BR>
+<A HREF="manual.html#pdf-vmkopen_table">vmkopen_table</A><BR>
+<A HREF="manual.html#pdf-vmkopen_utf8">vmkopen_utf8</A><BR>
+
+<H3><A NAME="constants">constants</A></H3>
+<P>
+<A HREF="manual.html#pdf-VMK_ERRERR">VMK_ERRERR</A><BR>
+<A HREF="manual.html#pdf-VMK_ERRFILE">VMK_ERRFILE</A><BR>
+<A HREF="manual.html#pdf-VMK_ERRMEM">VMK_ERRMEM</A><BR>
+<A HREF="manual.html#pdf-VMK_ERRRUN">VMK_ERRRUN</A><BR>
+<A HREF="manual.html#pdf-VMK_ERRSYNTAX">VMK_ERRSYNTAX</A><BR>
+<A HREF="manual.html#pdf-VMK_HOOKCALL">VMK_HOOKCALL</A><BR>
+<A HREF="manual.html#pdf-VMK_HOOKCOUNT">VMK_HOOKCOUNT</A><BR>
+<A HREF="manual.html#pdf-VMK_HOOKLINE">VMK_HOOKLINE</A><BR>
+<A HREF="manual.html#pdf-VMK_HOOKRET">VMK_HOOKRET</A><BR>
+<A HREF="manual.html#pdf-VMK_HOOKTAILCALL">VMK_HOOKTAILCALL</A><BR>
+<A HREF="manual.html#pdf-VMK_LOADED_TABLE">VMK_LOADED_TABLE</A><BR>
+<A HREF="manual.html#pdf-VMK_MASKCALL">VMK_MASKCALL</A><BR>
+<A HREF="manual.html#pdf-VMK_MASKCOUNT">VMK_MASKCOUNT</A><BR>
+<A HREF="manual.html#pdf-VMK_MASKLINE">VMK_MASKLINE</A><BR>
+<A HREF="manual.html#pdf-VMK_MASKRET">VMK_MASKRET</A><BR>
+<A HREF="manual.html#pdf-VMK_MAXINTEGER">VMK_MAXINTEGER</A><BR>
+<A HREF="manual.html#pdf-VMK_MININTEGER">VMK_MININTEGER</A><BR>
+<A HREF="manual.html#pdf-VMK_MINSTACK">VMK_MINSTACK</A><BR>
+<A HREF="manual.html#pdf-VMK_MULTRET">VMK_MULTRET</A><BR>
+<A HREF="manual.html#pdf-VMK_NOREF">VMK_NOREF</A><BR>
+<A HREF="manual.html#pdf-VMK_OK">VMK_OK</A><BR>
+<A HREF="manual.html#pdf-VMK_OPADD">VMK_OPADD</A><BR>
+<A HREF="manual.html#pdf-VMK_OPBAND">VMK_OPBAND</A><BR>
+<A HREF="manual.html#pdf-VMK_OPBNOT">VMK_OPBNOT</A><BR>
+<A HREF="manual.html#pdf-VMK_OPBOR">VMK_OPBOR</A><BR>
+<A HREF="manual.html#pdf-VMK_OPBXOR">VMK_OPBXOR</A><BR>
+<A HREF="manual.html#pdf-VMK_OPDIV">VMK_OPDIV</A><BR>
+<A HREF="manual.html#pdf-VMK_OPEQ">VMK_OPEQ</A><BR>
+<A HREF="manual.html#pdf-VMK_OPIDIV">VMK_OPIDIV</A><BR>
+<A HREF="manual.html#pdf-VMK_OPLE">VMK_OPLE</A><BR>
+<A HREF="manual.html#pdf-VMK_OPLT">VMK_OPLT</A><BR>
+<A HREF="manual.html#pdf-VMK_OPMOD">VMK_OPMOD</A><BR>
+<A HREF="manual.html#pdf-VMK_OPMUL">VMK_OPMUL</A><BR>
+<A HREF="manual.html#pdf-VMK_OPPOW">VMK_OPPOW</A><BR>
+<A HREF="manual.html#pdf-VMK_OPSHL">VMK_OPSHL</A><BR>
+<A HREF="manual.html#pdf-VMK_OPSHR">VMK_OPSHR</A><BR>
+<A HREF="manual.html#pdf-VMK_OPSUB">VMK_OPSUB</A><BR>
+<A HREF="manual.html#pdf-VMK_OPUNM">VMK_OPUNM</A><BR>
+<A HREF="manual.html#pdf-VMK_PRELOAD_TABLE">VMK_PRELOAD_TABLE</A><BR>
+<A HREF="manual.html#pdf-VMK_REFNIL">VMK_REFNIL</A><BR>
+<A HREF="manual.html#pdf-VMK_REGISTRYINDEX">VMK_REGISTRYINDEX</A><BR>
+<A HREF="manual.html#pdf-VMK_RIDX_GLOBALS">VMK_RIDX_GLOBALS</A><BR>
+<A HREF="manual.html#pdf-VMK_RIDX_MAINTHREAD">VMK_RIDX_MAINTHREAD</A><BR>
+<A HREF="manual.html#pdf-VMK_TBOOLEAN">VMK_TBOOLEAN</A><BR>
+<A HREF="manual.html#pdf-VMK_TFUNCTION">VMK_TFUNCTION</A><BR>
+<A HREF="manual.html#pdf-VMK_TLIGHTUSERDATA">VMK_TLIGHTUSERDATA</A><BR>
+<A HREF="manual.html#pdf-VMK_TNIL">VMK_TNIL</A><BR>
+<A HREF="manual.html#pdf-VMK_TNONE">VMK_TNONE</A><BR>
+<A HREF="manual.html#pdf-VMK_TNUMBER">VMK_TNUMBER</A><BR>
+<A HREF="manual.html#pdf-VMK_TSTRING">VMK_TSTRING</A><BR>
+<A HREF="manual.html#pdf-VMK_TTABLE">VMK_TTABLE</A><BR>
+<A HREF="manual.html#pdf-VMK_TTHREAD">VMK_TTHREAD</A><BR>
+<A HREF="manual.html#pdf-VMK_TUSERDATA">VMK_TUSERDATA</A><BR>
+<A HREF="manual.html#pdf-VMK_USE_APICHECK">VMK_USE_APICHECK</A><BR>
+<A HREF="manual.html#pdf-VMK_YIELD">VMK_YIELD</A><BR>
+<A HREF="manual.html#pdf-VMKL_BUFFERSIZE">VMKL_BUFFERSIZE</A><BR>
+
+</TD>
+</TR>
+</TABLE>
+
+<P CLASS="footer">
+Last update:
+Tue Apr  15 06:39:09 UTC 2024
+</P>
+<!--
+Last change: revised for vmk 0.1.1
+-->
+
+</BODY>
+</HTML>

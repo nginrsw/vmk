@@ -1,0 +1,14 @@
+require "lib/x"
+require "lib/y"
+
+own ax = x_head()
+own ay = y_head()
+own z = ax.." "..ay:upper()
+
+main = fn()
+	print(ax)
+	print(ay)
+	print(z)
+end
+
+main()
