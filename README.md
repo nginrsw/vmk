@@ -9,7 +9,7 @@ language, forked from [5.4](https://www.lua.org/manual/5.4/readme.html#changes)
 Version. This modification has been made to simplify learning, writing, and
 personalizing the language for my own use.
 
-For now, three main changes have been implemented:
+For now, three changes have been implemented:
 
 - The reserved word `local` has been replaced with `own`.
 - The reserved word `function` has been replaced with `fn`.
