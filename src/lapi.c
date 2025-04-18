@@ -80,8 +80,8 @@ static TValue *index2value (vmk_State *L, int idx) {
       return (idx <= func->nupvalues) ? &func->upvalue[idx-1]
                                       : &G(L)->nilvalue;
     }
-    else {  /* light C fn or Vmk fn (through a hook)?) */
-      api_check(L, ttislcf(s2v(ci->func.p)), "caller not a C fn");
+    else {  /* light C function or Vmk function (through a hook)?) */
+      api_check(L, ttislcf(s2v(ci->func.p)), "caller not a C function");
       return &G(L)->nilvalue;  /* no upvalues */
     }
   }
@@ -259,7 +259,7 @@ VMK_API void vmk_copy (vmk_State *L, int fromidx, int toidx) {
   to = index2value(L, toidx);
   api_check(L, isvalid(L, to), "invalid index");
   setobj(L, to, fr);
-  if (isupvalue(toidx))  /* fn upvalue? */
+  if (isupvalue(toidx))  /* function upvalue? */
     vmkC_barrier(L, clCvalue(s2v(L->ci->func.p)), fr);
   /* VMK_REGISTRYINDEX does not need gc barrier
      (collector revisits it before finishing collection) */
@@ -440,7 +440,7 @@ VMK_API vmk_CFunction vmk_tocfunction (vmk_State *L, int idx) {
   if (ttislcf(o)) return fvalue(o);
   else if (ttisCclosure(o))
     return clCvalue(o)->f;
-  else return NULL;  /* not a C fn */
+  else return NULL;  /* not a C function */
 }
 
 
@@ -468,7 +468,7 @@ VMK_API vmk_State *vmk_tothread (vmk_State *L, int idx) {
 /*
 ** Returns a pointer to the internal representation of an object.
 ** Note that ANSI C does not allow the conversion of a pointer to
-** fn to a 'void*', so the conversion here goes through
+** function to a 'void*', so the conversion here goes through
 ** a 'size_t'. (As the returned pointer is only informative, this
 ** conversion should not be a problem.)
 */
@@ -998,7 +998,7 @@ VMK_API int vmk_setiuservalue (vmk_State *L, int idx, int n) {
 #define checkresults(L,na,nr) \
      api_check(L, (nr) == VMK_MULTRET \
                || (L->ci->top.p - L->top.p >= (nr) - (na)), \
-	"results from fn overflow current stack size")
+	"results from function overflow current stack size")
 
 
 VMK_API void vmk_callk (vmk_State *L, int nargs, int nresults,
@@ -1055,10 +1055,10 @@ VMK_API int vmk_pcallk (vmk_State *L, int nargs, int nresults, int errfunc,
     func = 0;
   else {
     StkId o = index2stack(L, errfunc);
-    api_check(L, ttisfunction(s2v(o)), "error handler must be a fn");
+    api_check(L, ttisfunction(s2v(o)), "error handler must be a function");
     func = savestack(L, o);
   }
-  c.func = L->top.p - (nargs+1);  /* fn to be called */
+  c.func = L->top.p - (nargs+1);  /* function to be called */
   if (k == NULL || !yieldable(L)) {  /* no continuation or no yieldable? */
     c.nresults = nresults;  /* do a 'conventional' protected call */
     status = vmkD_pcall(L, f_call, &c, savestack(L, c.func), func);
@@ -1072,7 +1072,7 @@ VMK_API int vmk_pcallk (vmk_State *L, int nargs, int nresults, int errfunc,
     ci->u.c.old_errfunc = L->errfunc;
     L->errfunc = func;
     setoah(ci->callstatus, L->allowhook);  /* save value of 'allowhook' */
-    ci->callstatus |= CIST_YPCALL;  /* fn can do error recovery */
+    ci->callstatus |= CIST_YPCALL;  /* function can do error recovery */
     vmkD_call(L, c.func, nresults);  /* do the call */
     ci->callstatus &= ~CIST_YPCALL;
     L->errfunc = ci->u.c.old_errfunc;
@@ -1093,7 +1093,7 @@ VMK_API int vmk_load (vmk_State *L, vmk_Reader reader, void *data,
   vmkZ_init(L, &z, reader, data);
   status = vmkD_protectedparser(L, &z, chunkname, mode);
   if (status == VMK_OK) {  /* no errors? */
-    LClosure *f = clLvalue(s2v(L->top.p - 1));  /* get new fn */
+    LClosure *f = clLvalue(s2v(L->top.p - 1));  /* get new function */
     if (f->nupvalues >= 1) {  /* does it have an upvalue? */
       /* get global table from registry */
       const TValue *gt = getGtable(L);
@@ -1128,7 +1128,7 @@ VMK_API int vmk_status (vmk_State *L) {
 
 
 /*
-** Garbage-collection fn
+** Garbage-collection function
 */
 VMK_API int vmk_gc (vmk_State *L, int what, ...) {
   va_list argp;
@@ -1275,7 +1275,7 @@ VMK_API void vmk_toclose (vmk_State *L, int idx) {
   nresults = L->ci->nresults;
   api_check(L, L->tbclist.p < o, "given index below or equal a marked one");
   vmkF_newtbcupval(L, o);  /* create new to-be-closed upvalue */
-  if (!hastocloseCfunc(nresults))  /* fn not marked yet? */
+  if (!hastocloseCfunc(nresults))  /* function not marked yet? */
     L->ci->nresults = codeNresults(nresults);  /* mark it */
   vmk_assert(hastocloseCfunc(L->ci->nresults));
   vmk_unlock(L);
@@ -1418,7 +1418,7 @@ static UpVal **getupvalref (vmk_State *L, int fidx, int n, LClosure **pf) {
   static const UpVal *const nullup = NULL;
   LClosure *f;
   TValue *fi = index2value(L, fidx);
-  api_check(L, ttisLclosure(fi), "Vmk fn expected");
+  api_check(L, ttisLclosure(fi), "Vmk function expected");
   f = clLvalue(fi);
   if (pf) *pf = f;
   if (1 <= n && n <= f->p->sizeupvalues)
@@ -1443,7 +1443,7 @@ VMK_API void *vmk_upvalueid (vmk_State *L, int fidx, int n) {
     case VMK_VLCF:
       return NULL;  /* light C functions have no upvalues */
     default: {
-      api_check(L, 0, "fn expected");
+      api_check(L, 0, "function expected");
       return NULL;
     }
   }

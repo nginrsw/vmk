@@ -1,7 +1,7 @@
 /*
 ** $Id: vmk.h $
-** VMK - A Vmk Mod Scripting Language
-** VMK, KRS-Bdg, Indonesia (http://www.github.com/nginrsw/vmk)
+** VMK - A Scripting Language
+** VMK, KRS-Bdg, Indonesia (https://codeberg.org/nginrsw/vmk)
 ** See Copyright Notice at the end of this file
 */
 
@@ -16,21 +16,21 @@
 #include "vmkconf.h"
 
 
-#define VMK_VERSION_MAJOR	"0"
-#define VMK_VERSION_MINOR	"1"
-#define VMK_VERSION_RELEASE	"1"
+#define VMK_VERSION_MAJOR	"1"
+#define VMK_VERSION_MINOR	"0"
+#define VMK_VERSION_RELEASE	"0"
 
 #define VMK_VERSION_NUM			504
 #define VMK_VERSION_RELEASE_NUM		(VMK_VERSION_NUM * 100 + 7)
 
 #define VMK_VERSION	"VMK " VMK_VERSION_MAJOR "." VMK_VERSION_MINOR
 #define VMK_RELEASE	VMK_VERSION "." VMK_VERSION_RELEASE
-#define VMK_COPYRIGHT	VMK_RELEASE "  Copyright (C) 2025 github.com/nginrsw/vmk, KRS-Bdg"
+#define VMK_COPYRIGHT	VMK_RELEASE "  Copyright (C) 2025 codeberg.org/nginrsw/vmk, KRS-Bdg"
 #define VMK_AUTHORS	"Gillar Ajie Prasatya"
 
 
 /* mark for precompiled code ('<esc>Vmk') */
-#define VMK_SIGNATURE	"\x1bVmk"
+#define VMK_SIGNATURE	"\x1b" "Vmk"
 
 /* option for multiple returns in 'vmk_pcall' and 'vmk_call' */
 #define VMK_MULTRET	(-1)
@@ -76,7 +76,7 @@ typedef struct vmk_State vmk_State;
 
 
 
-/* minimum Vmk stack available to a C fn */
+/* minimum Vmk stack available to a C function */
 #define VMK_MINSTACK	20
 
 
@@ -96,7 +96,7 @@ typedef VMK_INTEGER vmk_Integer;
 /* unsigned integer type */
 typedef VMK_UNSIGNED vmk_Unsigned;
 
-/* type for continuation-fn contexts */
+/* type for continuation-function contexts */
 typedef VMK_KCONTEXT vmk_KContext;
 
 
@@ -324,7 +324,7 @@ VMK_API void (vmk_warning)  (vmk_State *L, const char *msg, int tocont);
 
 
 /*
-** garbage-collection fn and options
+** garbage-collection function and options
 */
 
 #define VMK_GCSTOP		0
@@ -475,7 +475,7 @@ VMK_API int (vmk_setcstacklimit) (vmk_State *L, unsigned int limit);
 struct vmk_Debug {
   int event;
   const char *name;	/* (n) */
-  const char *namewhat;	/* (n) 'global', 'own', 'field', 'method' */
+  const char *namewhat;	/* (n) 'global', 'local', 'field', 'method' */
   const char *what;	/* (S) 'Vmk', 'C', 'main', 'tail' */
   const char *source;	/* (S) */
   size_t srclen;	/* (S) */
@@ -490,14 +490,14 @@ struct vmk_Debug {
   unsigned short ntransfer;   /* (r) number of transferred values */
   char short_src[VMK_IDSIZE]; /* (S) */
   /* private part */
-  struct CallInfo *i_ci;  /* active fn */
+  struct CallInfo *i_ci;  /* active function */
 };
 
 /* }====================================================================== */
 
 
 /******************************************************************************
-* Copyright (C) 2025 github.com/nginrsw/vmk, KRS-Bdg.
+* Copyright (C) 2025 codeberg.org/nginrsw/vmk, PUC-Rio.
 *
 * Permission is hereby granted, free of charge, to any person obtaining
 * a copy of this software and associated documentation files (the

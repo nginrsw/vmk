@@ -170,7 +170,7 @@ int vmkV_tointeger (const TValue *obj, vmk_Integer *p, F2Imod mode) {
 ** Otherwise, check whether the limit can be converted to a float. If
 ** the float is too large, clip it to VMK_MAXINTEGER.  If the float
 ** is too negative, the loop should not run, because any initial
-** integer value is greater than such limit; so, the fn returns
+** integer value is greater than such limit; so, the function returns
 ** true to signal that. (For this latter case, no integer limit would be
 ** correct; even a limit of VMK_MININTEGER would run the loop once for
 ** an initial value equal to VMK_MININTEGER.)
@@ -307,7 +307,7 @@ void vmkV_finishget (vmk_State *L, const TValue *t, TValue *key, StkId val,
       }
       /* else will try the metamethod */
     }
-    if (ttisfunction(tm)) {  /* is metamethod a fn? */
+    if (ttisfunction(tm)) {  /* is metamethod a function? */
       vmkT_callTMres(L, tm, t, key, val);  /* call it */
       return;
     }
@@ -425,7 +425,7 @@ l_sinline int LTintfloat (vmk_Integer i, vmk_Number f) {
 
 /*
 ** Check whether integer 'i' is less than or equal to float 'f'.
-** See comments on previous fn.
+** See comments on previous function.
 */
 l_sinline int LEintfloat (vmk_Integer i, vmk_Number f) {
   if (l_intfitsf(i))
@@ -442,7 +442,7 @@ l_sinline int LEintfloat (vmk_Integer i, vmk_Number f) {
 
 /*
 ** Check whether float 'f' is less than integer 'i'.
-** See comments on previous fn.
+** See comments on previous function.
 */
 l_sinline int LTfloatint (vmk_Number f, vmk_Integer i) {
   if (l_intfitsf(i))
@@ -459,7 +459,7 @@ l_sinline int LTfloatint (vmk_Number f, vmk_Integer i) {
 
 /*
 ** Check whether float 'f' is less than or equal to integer 'i'.
-** See comments on previous fn.
+** See comments on previous function.
 */
 l_sinline int LEfloatint (vmk_Number f, vmk_Integer i) {
   if (l_intfitsf(i))
@@ -799,9 +799,9 @@ static void pushclosure (vmk_State *L, Proto *p, UpVal **encup, StkId base,
   ncl->p = p;
   setclLvalue2s(L, ra, ncl);  /* anchor new closure in stack */
   for (i = 0; i < nup; i++) {  /* fill in its upvalues */
-    if (uv[i].instack)  /* upvalue refers to own variable? */
+    if (uv[i].instack)  /* upvalue refers to local variable? */
       ncl->upvals[i] = vmkF_findupval(L, base + uv[i].idx);
-    else  /* get upvalue from enclosing fn */
+    else  /* get upvalue from enclosing function */
       ncl->upvals[i] = encup[uv[i].idx];
     vmkC_objbarrier(L, ncl, ncl->upvals[i]);
   }
@@ -918,7 +918,7 @@ void vmkV_finishOp (vmk_State *L) {
 
 
 /*
-** Auxiliary fn for arithmetic operations over floats and others
+** Auxiliary function for arithmetic operations over floats and others
 ** with two register operands.
 */
 #define op_arithf_aux(L,v1,v2,fop) {  \
@@ -1083,7 +1083,7 @@ void vmkV_finishOp (vmk_State *L) {
 
 /*
 ** Execute a jump instruction. The 'updatetrap' allows signals to stop
-** tight loops. (Without it, the own copy of 'trap' could never change.)
+** tight loops. (Without it, the local copy of 'trap' could never change.)
 */
 #define dojump(ci,i,e)	{ pc += GETARG_sJ(i) + e; updatetrap(ci); }
 
@@ -1681,7 +1681,7 @@ void vmkV_execute (vmk_State *L, CallInfo *ci) {
         savepc(L);  /* in case of errors */
         if ((newci = vmkD_precall(L, ra, nresults)) == NULL)
           updatetrap(ci);  /* C call; nothing else to be done */
-        else {  /* Vmk call: run fn in this same C frame */
+        else {  /* Vmk call: run function in this same C frame */
           ci = newci;
           goto startfunc;
         }
@@ -1689,8 +1689,8 @@ void vmkV_execute (vmk_State *L, CallInfo *ci) {
       }
       vmcase(OP_TAILCALL) {
         StkId ra = RA(i);
-        int b = GETARG_B(i);  /* number of arguments + 1 (fn) */
-        int n;  /* number of results when calling a C fn */
+        int b = GETARG_B(i);  /* number of arguments + 1 (function) */
+        int n;  /* number of results when calling a C function */
         int nparams1 = GETARG_C(i);
         /* delta is virtual 'func' - real 'func' (vararg functions) */
         int delta = (nparams1) ? ci->u.l.nextraargs + nparams1 : 0;
@@ -1704,9 +1704,9 @@ void vmkV_execute (vmk_State *L, CallInfo *ci) {
           vmk_assert(L->tbclist.p < base);  /* no pending tbc variables */
           vmk_assert(base == ci->func.p + 1);
         }
-        if ((n = vmkD_pretailcall(L, ci, ra, b, delta)) < 0)  /* Vmk fn? */
+        if ((n = vmkD_pretailcall(L, ci, ra, b, delta)) < 0)  /* Vmk function? */
           goto startfunc;  /* execute the callee */
-        else {  /* C fn? */
+        else {  /* C function? */
           ci->func.p -= delta;  /* restore 'func' (if vararg) */
           vmkD_poscall(L, ci, n);  /* finish caller */
           updatetrap(ci);  /* 'vmkD_poscall' can change hooks */
@@ -1728,7 +1728,7 @@ void vmkV_execute (vmk_State *L, CallInfo *ci) {
           updatetrap(ci);
           updatestack(ci);
         }
-        if (nparams1)  /* vararg fn? */
+        if (nparams1)  /* vararg function? */
           ci->func.p -= ci->u.l.nextraargs + nparams1;
         L->top.p = ra + n;  /* set call for 'vmkD_poscall' */
         vmkD_poscall(L, ci, n);
@@ -1773,7 +1773,7 @@ void vmkV_execute (vmk_State *L, CallInfo *ci) {
               setnilvalue(s2v(L->top.p++));  /* complete missing results */
           }
         }
-       ret:  /* return from a Vmk fn */
+       ret:  /* return from a Vmk function */
         if (ci->callstatus & CIST_FRESH)
           return;  /* end this frame */
         else {
@@ -1819,12 +1819,12 @@ void vmkV_execute (vmk_State *L, CallInfo *ci) {
       vmcase(OP_TFORCALL) {
        l_tforcall: {
         StkId ra = RA(i);
-        /* 'ra' has the iterator fn, 'ra + 1' has the state,
+        /* 'ra' has the iterator function, 'ra + 1' has the state,
            'ra + 2' has the control variable, and 'ra + 3' has the
            to-be-closed variable. The call will use the stack after
            these values (starting at 'ra + 4')
         */
-        /* push fn, state, and control variable */
+        /* push function, state, and control variable */
         memcpy(ra + 4, ra, 3 * sizeof(*ra));
         L->top.p = ra + 4 + 3;
         ProtectNT(vmkD_call(L, ra + 4, GETARG_C(i)));  /* do the call */
@@ -1885,7 +1885,7 @@ void vmkV_execute (vmk_State *L, CallInfo *ci) {
           vmkD_hookcall(L, ci);
           L->oldpc = 1;  /* next opcode will be seen as a "new" line */
         }
-        updatebase(ci);  /* fn has new base after adjustment */
+        updatebase(ci);  /* function has new base after adjustment */
         vmbreak;
       }
       vmcase(OP_EXTRAARG) {

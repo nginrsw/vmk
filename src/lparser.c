@@ -30,7 +30,7 @@
 
 
 
-/* maximum number of own variables per fn (must be smaller
+/* maximum number of local variables per function (must be smaller
    than 250, due to the bytecode format) */
 #define MAXVARS		200
 
@@ -76,8 +76,8 @@ static l_noret errorlimit (FuncState *fs, int limit, const char *what) {
   const char *msg;
   int line = fs->f->linedefined;
   const char *where = (line == 0)
-                      ? "main fn"
-                      : vmkO_pushfstring(L, "fn at line %d", line);
+                      ? "main function"
+                      : vmkO_pushfstring(L, "function at line %d", line);
   msg = vmkO_pushfstring(L, "too many %s (limit is %d) in %s",
                              what, limit, where);
   vmkX_syntaxerror(fs->ls, msg);
@@ -169,14 +169,14 @@ static void codename (LexState *ls, expdesc *e) {
 
 
 /*
-** Register a new own variable in the active 'Proto' (for debug
+** Register a new local variable in the active 'Proto' (for debug
 ** information).
 */
 static int registerlocalvar (LexState *ls, FuncState *fs, TString *varname) {
   Proto *f = fs->f;
   int oldsize = f->sizelocvars;
   vmkM_growvector(ls->L, f->locvars, fs->ndebugvars, f->sizelocvars,
-                  LocVar, SHRT_MAX, "own variables");
+                  LocVar, SHRT_MAX, "local variables");
   while (oldsize < f->sizelocvars)
     f->locvars[oldsize++].varname = NULL;
   f->locvars[fs->ndebugvars].varname = varname;
@@ -187,8 +187,8 @@ static int registerlocalvar (LexState *ls, FuncState *fs, TString *varname) {
 
 
 /*
-** Create a new own variable with the given 'name'. Return its index
-** in the fn.
+** Create a new local variable with the given 'name'. Return its index
+** in the function.
 */
 static int new_localvar (LexState *ls, TString *name) {
   vmk_State *L = ls->L;
@@ -196,9 +196,9 @@ static int new_localvar (LexState *ls, TString *name) {
   Dyndata *dyd = ls->dyd;
   Vardesc *var;
   checklimit(fs, dyd->actvar.n + 1 - fs->firstlocal,
-                 MAXVARS, "own variables");
+                 MAXVARS, "local variables");
   vmkM_growvector(L, dyd->actvar.arr, dyd->actvar.n + 1,
-                  dyd->actvar.size, Vardesc, USHRT_MAX, "own variables");
+                  dyd->actvar.size, Vardesc, USHRT_MAX, "local variables");
   var = &dyd->actvar.arr[dyd->actvar.n++];
   var->vd.kind = VDKREG;  /* default */
   var->vd.name = name;
@@ -238,7 +238,7 @@ static int reglevel (FuncState *fs, int nvar) {
 
 /*
 ** Return the number of variables in the register stack for the given
-** fn.
+** function.
 */
 int vmkY_nvarstack (FuncState *fs) {
   return reglevel(fs, fs->nactvar);
@@ -336,7 +336,7 @@ static void removevars (FuncState *fs, int tolevel) {
 
 
 /*
-** Search the upvalues of the fn 'fs' for one
+** Search the upvalues of the function 'fs' for one
 ** with the given 'name'.
 */
 static int searchupvalue (FuncState *fs, TString *name) {
@@ -383,8 +383,8 @@ static int newupvalue (FuncState *fs, TString *name, expdesc *v) {
 
 
 /*
-** Look for an active own variable with the name 'n' in the
-** fn 'fs'. If found, initialize 'var' with it and return
+** Look for an active local variable with the name 'n' in the
+** function 'fs'. If found, initialize 'var' with it and return
 ** its expression kind; otherwise return -1.
 */
 static int searchvar (FuncState *fs, TString *n, expdesc *var) {
@@ -439,13 +439,13 @@ static void singlevaraux (FuncState *fs, TString *n, expdesc *var, int base) {
     int v = searchvar(fs, n, var);  /* look up locals at current level */
     if (v >= 0) {  /* found? */
       if (v == VLOCAL && !base)
-        markupval(fs, var->u.var.vidx);  /* own will be used as an upval */
+        markupval(fs, var->u.var.vidx);  /* local will be used as an upval */
     }
-    else {  /* not found as own at current level; try upvalues */
+    else {  /* not found as local at current level; try upvalues */
       int idx = searchupvalue(fs, n);  /* try existing upvalues */
       if (idx < 0) {  /* not found? */
         singlevaraux(fs->prev, n, var, 0);  /* try upper levels */
-        if (var->k == VLOCAL || var->k == VUPVAL)  /* own or upvalue? */
+        if (var->k == VLOCAL || var->k == VUPVAL)  /* local or upvalue? */
           idx  = newupvalue(fs, n, var);  /* will be a new upvalue */
         else  /* it is a global or a constant */
           return;  /* don't need to do anything at this level */
@@ -509,11 +509,11 @@ static void adjust_assign (LexState *ls, int nvars, int nexps, expdesc *e) {
 
 /*
 ** Generates an error that a goto jumps into the scope of some
-** own variable.
+** local variable.
 */
 static l_noret jumpscopeerror (LexState *ls, Labeldesc *gt) {
   const char *varname = getstr(getlocalvardesc(ls->fs, gt->nactvar)->vd.name);
-  const char *msg = "<goto %s> at line %d jumps into the scope of own '%s'";
+  const char *msg = "<goto %s> at line %d jumps into the scope of local '%s'";
   msg = vmkO_pushfstring(ls->L, msg, getstr(gt->name), gt->line, varname);
   vmkK_semerror(ls, msg);  /* raise the error */
 }
@@ -544,7 +544,7 @@ static void solvegoto (LexState *ls, int g, Labeldesc *label) {
 static Labeldesc *findlabel (LexState *ls, TString *name) {
   int i;
   Dyndata *dyd = ls->dyd;
-  /* check labels in current fn for a match */
+  /* check labels in current function for a match */
   for (i = ls->fs->firstlabel; i < dyd->label.n; i++) {
     Labeldesc *lb = &dyd->label.arr[i];
     if (eqstr(lb->name, name))  /* correct label? */
@@ -681,7 +681,7 @@ static void leaveblock (FuncState *fs) {
   if (!hasclose && bl->previous && bl->upval)  /* still need a 'close'? */
     vmkK_codeABC(fs, OP_CLOSE, stklevel, 0, 0);
   fs->freereg = stklevel;  /* free registers */
-  ls->dyd->label.n = bl->firstlabel;  /* remove own labels */
+  ls->dyd->label.n = bl->firstlabel;  /* remove local labels */
   fs->bl = bl->previous;  /* current block now is previous one */
   if (bl->previous)  /* was it a nested block? */
     movegotosout(fs, bl);  /* update pending gotos to enclosing block */
@@ -699,7 +699,7 @@ static Proto *addprototype (LexState *ls) {
   Proto *clp;
   vmk_State *L = ls->L;
   FuncState *fs = ls->fs;
-  Proto *f = fs->f;  /* prototype of current fn */
+  Proto *f = fs->f;  /* prototype of current function */
   if (fs->np >= f->sizep) {
     int oldsize = f->sizep;
     vmkM_growvector(L, f->p, fs->np, f->sizep, Proto *, MAXARG_Bx, "functions");
@@ -713,7 +713,7 @@ static Proto *addprototype (LexState *ls) {
 
 
 /*
-** codes instruction to create new closure in parent fn.
+** codes instruction to create new closure in parent function.
 ** The OP_CLOSURE instruction uses the last available register,
 ** so that, if it invokes the GC, the GC knows which registers
 ** are in use at that time.
@@ -1050,7 +1050,7 @@ static void funcargs (LexState *ls, expdesc *f) {
       break;
     }
     default: {
-      vmkX_syntaxerror(ls, "fn arguments expected");
+      vmkX_syntaxerror(ls, "function arguments expected");
     }
   }
   vmk_assert(f->k == VNONRELOC);
@@ -1064,7 +1064,7 @@ static void funcargs (LexState *ls, expdesc *f) {
   }
   init_exp(f, VCALL, vmkK_codeABC(fs, OP_CALL, base, nparams+1, 2));
   vmkK_fixline(fs, line);
-  fs->freereg = base+1;  /* call removes fn and arguments and leaves
+  fs->freereg = base+1;  /* call removes function and arguments and leaves
                             one result (unless changed later) */
 }
 
@@ -1170,7 +1170,7 @@ static void simpleexp (LexState *ls, expdesc *v) {
     case TK_DOTS: {  /* vararg */
       FuncState *fs = ls->fs;
       check_condition(ls, fs->f->is_vararg,
-                      "cannot use '...' outside a vararg fn");
+                      "cannot use '...' outside a vararg function");
       init_exp(v, VVARARG, vmkK_codeABC(fs, OP_VARARG, 0, 0, 1));
       break;
     }
@@ -1318,19 +1318,19 @@ static void block (LexState *ls) {
 */
 struct LHS_assign {
   struct LHS_assign *prev;
-  expdesc v;  /* variable (global, own, upvalue, or indexed) */
+  expdesc v;  /* variable (global, local, upvalue, or indexed) */
 };
 
 
 /*
-** check whether, in an assignment to an upvalue/own variable, the
-** upvalue/own variable is begin used in a previous assignment to a
-** table. If so, save original upvalue/own value in a safe place and
+** check whether, in an assignment to an upvalue/local variable, the
+** upvalue/local variable is begin used in a previous assignment to a
+** table. If so, save original upvalue/local value in a safe place and
 ** use this safe copy in the previous assignment.
 */
 static void check_conflict (LexState *ls, struct LHS_assign *lh, expdesc *v) {
   FuncState *fs = ls->fs;
-  int extra = fs->freereg;  /* eventual position to save own variable */
+  int extra = fs->freereg;  /* eventual position to save local variable */
   int conflict = 0;
   for (; lh; lh = lh->prev) {  /* check all previous assignments */
     if (vkisindexed(lh->v.k)) {  /* assignment to table field? */
@@ -1343,10 +1343,10 @@ static void check_conflict (LexState *ls, struct LHS_assign *lh, expdesc *v) {
       }
       else {  /* table is a register */
         if (v->k == VLOCAL && lh->v.u.ind.t == v->u.var.ridx) {
-          conflict = 1;  /* table is the own being assigned now */
+          conflict = 1;  /* table is the local being assigned now */
           lh->v.u.ind.t = extra;  /* assignment will use safe copy */
         }
-        /* is index the own being assigned? */
+        /* is index the local being assigned? */
         if (lh->v.k == VINDEXED && v->k == VLOCAL &&
             lh->v.u.ind.idx == v->u.var.ridx) {
           conflict = 1;
@@ -1356,7 +1356,7 @@ static void check_conflict (LexState *ls, struct LHS_assign *lh, expdesc *v) {
     }
   }
   if (conflict) {
-    /* copy upvalue/own value to a temporary (in position 'extra') */
+    /* copy upvalue/local value to a temporary (in position 'extra') */
     if (v->k == VLOCAL)
       vmkK_codeABC(fs, OP_MOVE, extra, v->u.var.ridx, 0);
     else
@@ -1689,10 +1689,10 @@ static void ifstat (LexState *ls, int line) {
 static void localfunc (LexState *ls) {
   expdesc b;
   FuncState *fs = ls->fs;
-  int fvar = fs->nactvar;  /* fn's variable index */
-  new_localvar(ls, str_checkname(ls));  /* new own variable */
+  int fvar = fs->nactvar;  /* function's variable index */
+  new_localvar(ls, str_checkname(ls));  /* new local variable */
   adjustlocalvars(ls, 1);  /* enter its scope */
-  body(ls, &b, 0, ls->linenumber);  /* fn created in next register */
+  body(ls, &b, 0, ls->linenumber);  /* function created in next register */
   /* debug information will only see the variable after this point! */
   localdebuginfo(fs, fvar)->startpc = fs->pc;
 }
@@ -1738,7 +1738,7 @@ static void localstat (LexState *ls) {
     getlocalvardesc(fs, vidx)->vd.kind = kind;
     if (kind == RDKTOCLOSE) {  /* to-be-closed? */
       if (toclose != -1)  /* one already present? */
-        vmkK_semerror(ls, "multiple to-be-closed variables in own list");
+        vmkK_semerror(ls, "multiple to-be-closed variables in local list");
       toclose = fs->nactvar + nvars;
     }
     nvars++;
@@ -1783,7 +1783,7 @@ static void funcstat (LexState *ls, int line) {
   /* funcstat -> FUNCTION funcname body */
   int ismethod;
   expdesc v, b;
-  vmkX_next(ls);  /* skip FUNCTION */
+  // vmkX_next(ls);  /* skip FUNCTION */
   ismethod = funcname(ls, &v);
   body(ls, &b, ismethod, line);
   check_readonly(ls, &v);
@@ -1872,13 +1872,15 @@ static void statement (LexState *ls) {
       repeatstat(ls, line);
       break;
     }
-    case TK_FUNCTION: {  /* stat -> funcstat */
+    // yang diutak atik itu ini -> TK_FUNCTION sama bawahnya TK_LOCAL
+    case TK_FUNCTION: case TK_FN: {  /* stat -> funcstat */
+      vmkX_next(ls);  /* skip FUNCTION or FN */
       funcstat(ls, line);
       break;
     }
-    case TK_LOCAL: {  /* stat -> localstat */
-      vmkX_next(ls);  /* skip LOCAL */
-      if (testnext(ls, TK_FUNCTION))  /* own fn? */
+	case TK_LOCAL: case TK_OWN: {  /* stat -> localstat */
+      vmkX_next(ls);  /* skip LOCAL or OWN */
+      if (testnext(ls, TK_FUNCTION) || testnext(ls, TK_FN))  /*sampai ini, local function or fn? */
         localfunc(ls);
       else
         localstat(ls);
@@ -1918,14 +1920,14 @@ static void statement (LexState *ls) {
 
 
 /*
-** compiles the main fn, which is a regular vararg fn with an
+** compiles the main function, which is a regular vararg function with an
 ** upvalue named VMK_ENV
 */
 static void mainfunc (LexState *ls, FuncState *fs) {
   BlockCnt bl;
   Upvaldesc *env;
   open_func(ls, fs, &bl);
-  setvararg(fs, 0);  /* main fn is always declared vararg */
+  setvararg(fs, 0);  /* main function is always declared vararg */
   env = allocupvalue(fs);  /* ...set environment upvalue */
   env->instack = 1;
   env->idx = 0;

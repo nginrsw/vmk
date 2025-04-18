@@ -20,7 +20,7 @@
 ** Extra types for collectable non-values
 */
 #define VMK_TUPVAL	VMK_NUMTYPES  /* upvalues */
-#define VMK_TPROTO	(VMK_NUMTYPES+1)  /* fn prototypes */
+#define VMK_TPROTO	(VMK_NUMTYPES+1)  /* function prototypes */
 #define VMK_TDEADKEY	(VMK_NUMTYPES+2)  /* removed keys in tables */
 
 
@@ -508,18 +508,18 @@ typedef struct Udata0 {
 
 
 /*
-** Description of an upvalue for fn prototypes
+** Description of an upvalue for function prototypes
 */
 typedef struct Upvaldesc {
   TString *name;  /* upvalue name (for debug information) */
   lu_byte instack;  /* whether it is in stack (register) */
-  lu_byte idx;  /* index of upvalue (in stack or in outer fn's list) */
+  lu_byte idx;  /* index of upvalue (in stack or in outer function's list) */
   lu_byte kind;  /* kind of corresponding variable */
 } Upvaldesc;
 
 
 /*
-** Description of a own variable for fn prototypes
+** Description of a local variable for function prototypes
 ** (used for debug information)
 */
 typedef struct LocVar {
@@ -551,7 +551,7 @@ typedef struct Proto {
   CommonHeader;
   lu_byte numparams;  /* number of fixed (named) parameters */
   lu_byte is_vararg;
-  lu_byte maxstacksize;  /* number of registers needed by this fn */
+  lu_byte maxstacksize;  /* number of registers needed by this function */
   int sizeupvalues;  /* size of 'upvalues' */
   int sizek;  /* size of 'k' */
   int sizecode;
@@ -561,13 +561,13 @@ typedef struct Proto {
   int sizeabslineinfo;  /* size of 'abslineinfo' */
   int linedefined;  /* debug information  */
   int lastlinedefined;  /* debug information  */
-  TValue *k;  /* constants used by the fn */
+  TValue *k;  /* constants used by the function */
   Instruction *code;  /* opcodes */
-  struct Proto **p;  /* functions defined inside the fn */
+  struct Proto **p;  /* functions defined inside the function */
   Upvaldesc *upvalues;  /* upvalue information */
   ls_byte *lineinfo;  /* information about source lines (debug information) */
   AbsLineInfo *abslineinfo;  /* idem */
-  LocVar *locvars;  /* information about own variables (debug information) */
+  LocVar *locvars;  /* information about local variables (debug information) */
   TString  *source;  /* used for debug information */
   GCObject *gclist;
 } Proto;
@@ -586,7 +586,7 @@ typedef struct Proto {
 
 /* Variant tags for functions */
 #define VMK_VLCL	makevariant(VMK_TFUNCTION, 0)  /* Vmk closure */
-#define VMK_VLCF	makevariant(VMK_TFUNCTION, 1)  /* light C fn */
+#define VMK_VLCF	makevariant(VMK_TFUNCTION, 1)  /* light C function */
 #define VMK_VCCL	makevariant(VMK_TFUNCTION, 2)  /* C closure */
 
 #define ttisfunction(o)		checktype(o, VMK_TFUNCTION)
@@ -791,7 +791,7 @@ typedef struct Table {
 #define sizenode(t)	(twoto((t)->lsizenode))
 
 
-/* size of buffer for 'vmkO_utf8esc' fn */
+/* size of buffer for 'vmkO_utf8esc' function */
 #define UTF8BUFFSZ	8
 
 VMKI_FUNC int vmkO_utf8esc (char *buff, unsigned long x);

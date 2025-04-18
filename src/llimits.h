@@ -210,7 +210,7 @@ typedef l_uint32 Instruction;
 ** Maximum length for short strings, that is, strings that are
 ** internalized. (Cannot be smaller than reserved words or tags for
 ** metamethods, as these strings must be internalized;
-** #("fn") = 8, #("__newindex") = 10.)
+** #("function") = 8, #("__newindex") = 10.)
 */
 #if !defined(VMKI_MAXSHORTLEN)
 #define VMKI_MAXSHORTLEN	40
@@ -267,7 +267,7 @@ typedef l_uint32 Instruction;
 
 /*
 ** macro executed during Vmk functions at points where the
-** fn can yield.
+** function can yield.
 */
 #if !defined(vmki_threadyield)
 #define vmki_threadyield(L)	{vmk_unlock(L); vmk_lock(L);}

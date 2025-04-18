@@ -60,7 +60,7 @@ static const char *const CLIBS = "_CLIBS";
 
 /*
 ** Special type equivalent to '(void*)' for functions in gcc
-** (to suppress warnings when converting fn pointers)
+** (to suppress warnings when converting function pointers)
 */
 typedef void (*voidf)(void);
 
@@ -83,8 +83,8 @@ static void lsys_unloadlib (void *lib);
 static void *lsys_load (vmk_State *L, const char *path, int seeglb);
 
 /*
-** Try to find a fn named 'sym' in library 'lib'.
-** Returns the fn; in case of error, returns NULL plus an
+** Try to find a function named 'sym' in library 'lib'.
+** Returns the function; in case of error, returns NULL plus an
 ** error string in the stack.
 */
 static vmk_CFunction lsys_sym (vmk_State *L, void *lib, const char *sym);
@@ -105,7 +105,7 @@ static vmk_CFunction lsys_sym (vmk_State *L, void *lib, const char *sym);
 #include <dlfcn.h>
 
 /*
-** Macro to convert pointer-to-void* to pointer-to-fn. This cast
+** Macro to convert pointer-to-void* to pointer-to-function. This cast
 ** is undefined according to ISO C, but POSIX assumes that it works.
 ** (The '__extension__' in gnu compilers is only to avoid warnings.)
 */
@@ -368,14 +368,14 @@ static int gctm (vmk_State *L) {
 #define ERRFUNC		2
 
 /*
-** Look for a C fn named 'sym' in a dynamically loaded library
+** Look for a C function named 'sym' in a dynamically loaded library
 ** 'path'.
 ** First, check whether the library is already loaded; if not, try
 ** to load it.
 ** Then, if 'sym' is '*', return true (as library has been loaded).
 ** Otherwise, look for symbol 'sym' in the library and push a
-** C fn with that symbol.
-** Return 0 and 'true' or a fn in the stack; in case of
+** C function with that symbol.
+** Return 0 and 'true' or a function in the stack; in case of
 ** errors, return an error code and an error message in the stack.
 */
 static int lookforfunc (vmk_State *L, const char *path, const char *sym) {
@@ -385,15 +385,15 @@ static int lookforfunc (vmk_State *L, const char *path, const char *sym) {
     if (reg == NULL) return ERRLIB;  /* unable to load library */
     addtoclib(L, path, reg);
   }
-  if (*sym == '*') {  /* loading only library (no fn)? */
+  if (*sym == '*') {  /* loading only library (no function)? */
     vmk_pushboolean(L, 1);  /* return 'true' */
     return 0;  /* no errors */
   }
   else {
     vmk_CFunction f = lsys_sym(L, reg, sym);
     if (f == NULL)
-      return ERRFUNC;  /* unable to find fn */
-    vmk_pushcfunction(L, f);  /* else create new fn */
+      return ERRFUNC;  /* unable to find function */
+    vmk_pushcfunction(L, f);  /* else create new function */
     return 0;  /* no errors */
   }
 }
@@ -404,7 +404,7 @@ static int ll_loadlib (vmk_State *L) {
   const char *init = vmkL_checkstring(L, 2);
   int stat = lookforfunc(L, path, init);
   if (l_likely(stat == 0))  /* no errors? */
-    return 1;  /* return the loaded fn */
+    return 1;  /* return the loaded function */
   else {  /* error; error message is on stack top */
     vmkL_pushfail(L);
     vmk_insert(L, -2);
@@ -417,7 +417,7 @@ static int ll_loadlib (vmk_State *L) {
 
 /*
 ** {======================================================
-** 'require' fn
+** 'require' function
 ** =======================================================
 */
 
@@ -525,7 +525,7 @@ static const char *findfile (vmk_State *L, const char *name,
 static int checkload (vmk_State *L, int stat, const char *filename) {
   if (l_likely(stat)) {  /* module loaded successfully? */
     vmk_pushstring(L, filename);  /* will be 2nd argument to module */
-    return 2;  /* return open fn and file name */
+    return 2;  /* return open function and file name */
   }
   else
     return vmkL_error(L, "error loading module '%s' from file '%s':\n\t%s",
@@ -543,12 +543,12 @@ static int searcher_Vmk (vmk_State *L) {
 
 
 /*
-** Try to find a load fn for module 'modname' at file 'filename'.
+** Try to find a load function for module 'modname' at file 'filename'.
 ** First, change '.' to '_' in 'modname'; then, if 'modname' has
-** the form X-Y (that is, it has an "ignore mark"), build a fn
+** the form X-Y (that is, it has an "ignore mark"), build a function
 ** name "vmkopen_X" and look for it. (For compatibility, if that
 ** fails, it also tries "vmkopen_Y".) If there is no ignore mark,
-** look for a fn named "vmkopen_modname".
+** look for a function named "vmkopen_modname".
 */
 static int loadfunc (vmk_State *L, const char *filename, const char *modname) {
   const char *openfunc;
@@ -588,7 +588,7 @@ static int searcher_Croot (vmk_State *L) {
   if ((stat = loadfunc(L, filename, name)) != 0) {
     if (stat != ERRFUNC)
       return checkload(L, 0, filename);  /* real error */
-    else {  /* open fn not found */
+    else {  /* open function not found */
       vmk_pushfstring(L, "no module '%s' in file '%s'", name, filename);
       return 1;
     }
@@ -655,10 +655,10 @@ static int ll_require (vmk_State *L) {
   /* else must load package */
   vmk_pop(L, 1);  /* remove 'getfield' result */
   findloader(L, name);
-  vmk_rotate(L, -2, 1);  /* fn <-> loader data */
+  vmk_rotate(L, -2, 1);  /* function <-> loader data */
   vmk_pushvalue(L, 1);  /* name is 1st argument to module loader */
   vmk_pushvalue(L, -3);  /* loader data is 2nd argument */
-  /* stack: ...; loader data; loader fn; mod. name; loader data */
+  /* stack: ...; loader data; loader function; mod. name; loader data */
   vmk_call(L, 2, 1);  /* run loader to load module */
   /* stack: ...; loader data; result from loader */
   if (!vmk_isnil(L, -1))  /* non-nil return? */

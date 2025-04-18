@@ -80,7 +80,7 @@ typedef enum {
 ** return 1 with 'slot' pointing to 't[k]' (position of final result).
 ** Otherwise, return 0 (meaning it will have to check metamethod)
 ** with 'slot' pointing to an empty 't[k]' (if 't' is a table) or NULL
-** (otherwise). 'f' is the raw get fn to use.
+** (otherwise). 'f' is the raw get function to use.
 */
 #define vmkV_fastget(L,t,k,slot,f) \
   (!ttistable(t)  \

@@ -125,9 +125,9 @@ l_noret vmkD_throw (vmk_State *L, int errcode) {
       vmkD_throw(g->mainthread, errcode);  /* re-throw in main thread */
     }
     else {  /* no handler at all; abort */
-      if (g->panic) {  /* panic fn? */
+      if (g->panic) {  /* panic function? */
         vmk_unlock(L);
-        g->panic(L);  /* call panic fn (last chance to jump out) */
+        g->panic(L);  /* call panic function (last chance to jump out) */
       }
       abort();
     }
@@ -323,7 +323,7 @@ void vmkD_inctop (vmk_State *L) {
 /*
 ** Call a hook for the given event. Make sure there is a hook to be
 ** called. (Both 'L->hook' and 'L->hookmask', which trigger this
-** fn, can be changed asynchronously by signals.)
+** function, can be changed asynchronously by signals.)
 */
 void vmkD_hook (vmk_State *L, int event, int line,
                               int ftransfer, int ntransfer) {
@@ -362,12 +362,12 @@ void vmkD_hook (vmk_State *L, int event, int line,
 
 
 /*
-** Executes a call hook for Vmk functions. This fn is called
+** Executes a call hook for Vmk functions. This function is called
 ** whenever 'hookmask' is not zero, so it checks whether call hooks are
 ** active.
 */
 void vmkD_hookcall (vmk_State *L, CallInfo *ci) {
-  L->oldpc = 0;  /* set 'oldpc' for new fn */
+  L->oldpc = 0;  /* set 'oldpc' for new function */
   if (L->hookmask & VMK_MASKCALL) {  /* is call hook on? */
     int event = (ci->callstatus & CIST_TAIL) ? VMK_HOOKTAILCALL
                                              : VMK_HOOKCALL;
@@ -419,7 +419,7 @@ static StkId tryfuncTM (vmk_State *L, StkId func) {
   for (p = L->top.p; p > func; p--)  /* open space for metamethod */
     setobjs2s(L, p, p-1);
   L->top.p++;  /* stack space pre-allocated by the caller */
-  setobj2s(L, func, tm);  /* metamethod is the new fn to be called */
+  setobj2s(L, func, tm);  /* metamethod is the new function to be called */
   return func;
 }
 
@@ -477,9 +477,9 @@ l_sinline void moveresults (vmk_State *L, StkId res, int nres, int wanted) {
 
 
 /*
-** Finishes a fn call: calls hook if necessary, moves current
+** Finishes a function call: calls hook if necessary, moves current
 ** number of results to proper place, and returns to previous call
-** info. If fn has to close variables, hook must be called after
+** info. If function has to close variables, hook must be called after
 ** that.
 */
 void vmkD_poscall (vmk_State *L, CallInfo *ci, int nres) {
@@ -488,7 +488,7 @@ void vmkD_poscall (vmk_State *L, CallInfo *ci, int nres) {
     rethook(L, ci, nres);
   /* move results to proper place */
   moveresults(L, ci->func.p, nres, wanted);
-  /* fn cannot be in any of these cases when returning */
+  /* function cannot be in any of these cases when returning */
   vmk_assert(!(ci->callstatus &
         (CIST_HOOKED | CIST_YPCALL | CIST_FIN | CIST_TRAN | CIST_CLSRET)));
   L->ci = ci->previous;  /* back to caller (after closing variables) */
@@ -535,10 +535,10 @@ l_sinline int precallC (vmk_State *L, StkId func, int nresults,
 
 
 /*
-** Prepare a fn for a tail call, building its call info on top
+** Prepare a function for a tail call, building its call info on top
 ** of the current call info. 'narg1' is the number of arguments plus 1
-** (so that it includes the fn itself). Return the number of
-** results, if it was a C fn, or -1 for a Vmk fn.
+** (so that it includes the function itself). Return the number of
+** results, if it was a C function, or -1 for a Vmk function.
 */
 int vmkD_pretailcall (vmk_State *L, CallInfo *ci, StkId func,
                                     int narg1, int delta) {
@@ -546,28 +546,28 @@ int vmkD_pretailcall (vmk_State *L, CallInfo *ci, StkId func,
   switch (ttypetag(s2v(func))) {
     case VMK_VCCL:  /* C closure */
       return precallC(L, func, VMK_MULTRET, clCvalue(s2v(func))->f);
-    case VMK_VLCF:  /* light C fn */
+    case VMK_VLCF:  /* light C function */
       return precallC(L, func, VMK_MULTRET, fvalue(s2v(func)));
-    case VMK_VLCL: {  /* Vmk fn */
+    case VMK_VLCL: {  /* Vmk function */
       Proto *p = clLvalue(s2v(func))->p;
       int fsize = p->maxstacksize;  /* frame size */
       int nfixparams = p->numparams;
       int i;
       checkstackGCp(L, fsize - delta, func);
       ci->func.p -= delta;  /* restore 'func' (if vararg) */
-      for (i = 0; i < narg1; i++)  /* move down fn and arguments */
+      for (i = 0; i < narg1; i++)  /* move down function and arguments */
         setobjs2s(L, ci->func.p + i, func + i);
-      func = ci->func.p;  /* moved-down fn */
+      func = ci->func.p;  /* moved-down function */
       for (; narg1 <= nfixparams; narg1++)
         setnilvalue(s2v(func + narg1));  /* complete missing arguments */
-      ci->top.p = func + 1 + fsize;  /* top for new fn */
+      ci->top.p = func + 1 + fsize;  /* top for new function */
       vmk_assert(ci->top.p <= L->stack_last.p);
       ci->u.l.savedpc = p->code;  /* starting point */
       ci->callstatus |= CIST_TAIL;
       L->top.p = func + narg1;  /* set top */
       return -1;
     }
-    default: {  /* not a fn */
+    default: {  /* not a function */
       func = tryfuncTM(L, func);  /* try to get '__call' metamethod */
       /* return vmkD_pretailcall(L, ci, func, narg1 + 1, delta); */
       narg1++;
@@ -578,12 +578,12 @@ int vmkD_pretailcall (vmk_State *L, CallInfo *ci, StkId func,
 
 
 /*
-** Prepares the call to a fn (C or Vmk). For C functions, also do
-** the call. The fn to be called is at '*func'.  The arguments
-** are on the stack, right after the fn.  Returns the CallInfo
-** to be executed, if it was a Vmk fn. Otherwise (a C fn)
+** Prepares the call to a function (C or Vmk). For C functions, also do
+** the call. The function to be called is at '*func'.  The arguments
+** are on the stack, right after the function.  Returns the CallInfo
+** to be executed, if it was a Vmk function. Otherwise (a C function)
 ** returns NULL, with all the results on the stack, starting at the
-** original fn position.
+** original function position.
 */
 CallInfo *vmkD_precall (vmk_State *L, StkId func, int nresults) {
  retry:
@@ -591,10 +591,10 @@ CallInfo *vmkD_precall (vmk_State *L, StkId func, int nresults) {
     case VMK_VCCL:  /* C closure */
       precallC(L, func, nresults, clCvalue(s2v(func))->f);
       return NULL;
-    case VMK_VLCF:  /* light C fn */
+    case VMK_VLCF:  /* light C function */
       precallC(L, func, nresults, fvalue(s2v(func)));
       return NULL;
-    case VMK_VLCL: {  /* Vmk fn */
+    case VMK_VLCL: {  /* Vmk function */
       CallInfo *ci;
       Proto *p = clLvalue(s2v(func))->p;
       int narg = cast_int(L->top.p - func) - 1;  /* number of real arguments */
@@ -608,7 +608,7 @@ CallInfo *vmkD_precall (vmk_State *L, StkId func, int nresults) {
       vmk_assert(ci->top.p <= L->stack_last.p);
       return ci;
     }
-    default: {  /* not a fn */
+    default: {  /* not a function */
       func = tryfuncTM(L, func);  /* try to get '__call' metamethod */
       /* return vmkD_precall(L, func, nresults); */
       goto retry;  /* try again with metamethod */
@@ -618,10 +618,10 @@ CallInfo *vmkD_precall (vmk_State *L, StkId func, int nresults) {
 
 
 /*
-** Call a fn (C or Vmk) through C. 'inc' can be 1 (increment
+** Call a function (C or Vmk) through C. 'inc' can be 1 (increment
 ** number of recursive invocations in the C stack) or nyci (the same
 ** plus increment number of non-yieldable calls).
-** This fn can be called with some use of EXTRA_STACK, so it should
+** This function can be called with some use of EXTRA_STACK, so it should
 ** check the stack before doing anything else. 'vmkD_precall' already
 ** does that.
 */
@@ -632,7 +632,7 @@ l_sinline void ccall (vmk_State *L, StkId func, int nResults, l_uint32 inc) {
     checkstackp(L, 0, func);  /* free any use of EXTRA_STACK */
     vmkE_checkcstack(L);
   }
-  if ((ci = vmkD_precall(L, func, nResults)) != NULL) {  /* Vmk fn? */
+  if ((ci = vmkD_precall(L, func, nResults)) != NULL) {  /* Vmk function? */
     ci->callstatus = CIST_FRESH;  /* mark that it is a "fresh" execute */
     vmkV_execute(L, ci);  /* call it */
   }
@@ -693,20 +693,20 @@ static int finishpcallk (vmk_State *L,  CallInfo *ci) {
 
 
 /*
-** Completes the execution of a C fn interrupted by an yield.
-** The interruption must have happened while the fn was either
+** Completes the execution of a C function interrupted by an yield.
+** The interruption must have happened while the function was either
 ** closing its tbc variables in 'moveresults' or executing
 ** 'vmk_callk'/'vmk_pcallk'. In the first case, it just redoes
 ** 'vmkD_poscall'. In the second case, the call to 'finishpcallk'
 ** finishes the interrupted execution of 'vmk_pcallk'.  After that, it
-** calls the continuation of the interrupted fn and finally it
-** completes the job of the 'vmkD_call' that called the fn.  In
+** calls the continuation of the interrupted function and finally it
+** completes the job of the 'vmkD_call' that called the function.  In
 ** the call to 'adjustresults', we do not know the number of results
-** of the fn called by 'vmk_callk'/'vmk_pcallk', so we are
+** of the function called by 'vmk_callk'/'vmk_pcallk', so we are
 ** conservative and use VMK_MULTRET (always adjust).
 */
 static void finishCcall (vmk_State *L, CallInfo *ci) {
-  int n;  /* actual number of results from C fn */
+  int n;  /* actual number of results from C function */
   if (ci->callstatus & CIST_CLSRET) {  /* was returning? */
     vmk_assert(hastocloseCfunc(ci->nresults));
     n = ci->u2.nres;  /* just redo 'vmkD_poscall' */
@@ -737,9 +737,9 @@ static void unroll (vmk_State *L, void *ud) {
   CallInfo *ci;
   UNUSED(ud);
   while ((ci = L->ci) != &L->base_ci) {  /* something in the stack */
-    if (!isVmk(ci))  /* C fn? */
+    if (!isVmk(ci))  /* C function? */
       finishCcall(L, ci);  /* complete its execution */
-    else {  /* Vmk fn */
+    else {  /* Vmk function */
       vmkV_finishOp(L);  /* finish interrupted instruction */
       vmkV_execute(L, ci);  /* execute down to higher C 'boundary' */
     }
@@ -779,7 +779,7 @@ static int resume_error (vmk_State *L, const char *msg, int narg) {
 ** Do the work for 'vmk_resume' in protected mode. Most of the work
 ** depends on the status of the coroutine: initial state, suspended
 ** inside a hook, or regularly suspended (optionally with a continuation
-** fn), plus erroneous cases: non-suspended coroutine or dead
+** function), plus erroneous cases: non-suspended coroutine or dead
 ** coroutine.
 */
 static void resume (vmk_State *L, void *ud) {
@@ -800,7 +800,7 @@ static void resume (vmk_State *L, void *ud) {
       vmkV_execute(L, ci);  /* just continue running Vmk code */
     }
     else {  /* 'common' yield */
-      if (ci->u.c.k != NULL) {  /* does it have a continuation fn? */
+      if (ci->u.c.k != NULL) {  /* does it have a continuation function? */
         vmk_unlock(L);
         n = (*ci->u.c.k)(L, VMK_YIELD, ci->u.c.ctx); /* call continuation */
         vmk_lock(L);
@@ -839,7 +839,7 @@ VMK_API int vmk_resume (vmk_State *L, vmk_State *from, int nargs,
   if (L->status == VMK_OK) {  /* may be starting a coroutine */
     if (L->ci != &L->base_ci)  /* not in base level? */
       return resume_error(L, "cannot resume non-suspended coroutine", nargs);
-    else if (L->top.p - (L->ci->func.p + 1) == nargs)  /* no fn? */
+    else if (L->top.p - (L->ci->func.p + 1) == nargs)  /* no function? */
       return resume_error(L, "cannot resume dead coroutine", nargs);
   }
   else if (L->status != VMK_YIELD)  /* ended with errors? */
@@ -913,7 +913,7 @@ struct CloseP {
 
 
 /*
-** Auxiliary fn to call 'vmkF_close' in protected mode.
+** Auxiliary function to call 'vmkF_close' in protected mode.
 */
 static void closepaux (vmk_State *L, void *ud) {
   struct CloseP *pcl = cast(struct CloseP *, ud);
@@ -943,7 +943,7 @@ int vmkD_closeprotected (vmk_State *L, ptrdiff_t level, int status) {
 
 
 /*
-** Call the C fn 'func' in protected mode, restoring basic
+** Call the C function 'func' in protected mode, restoring basic
 ** thread information ('allowhook', etc.) and in particular
 ** its stack level in case of errors.
 */

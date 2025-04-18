@@ -19,7 +19,7 @@
 
 /*
 ** This file uses only the official API of Vmk.
-** Any fn declared here could be written as an application fn.
+** Any function declared here could be written as an application function.
 */
 
 #include "vmk.h"
@@ -74,11 +74,11 @@ static int findfield (vmk_State *L, int objidx, int level) {
 
 
 /*
-** Search for a name for a fn in all loaded modules
+** Search for a name for a function in all loaded modules
 */
 static int pushglobalfuncname (vmk_State *L, vmk_Debug *ar) {
   int top = vmk_gettop(L);
-  vmk_getinfo(L, "f", ar);  /* push fn */
+  vmk_getinfo(L, "f", ar);  /* push function */
   vmk_getfield(L, VMK_REGISTRYINDEX, VMK_LOADED_TABLE);
   vmkL_checkstack(L, 6, "not enough stack");  /* slots for 'findfield' */
   if (findfield(L, top + 1, 2)) {
@@ -92,7 +92,7 @@ static int pushglobalfuncname (vmk_State *L, vmk_Debug *ar) {
     return 1;
   }
   else {
-    vmk_settop(L, top);  /* remove fn and global table */
+    vmk_settop(L, top);  /* remove function and global table */
     return 0;
   }
 }
@@ -100,7 +100,7 @@ static int pushglobalfuncname (vmk_State *L, vmk_Debug *ar) {
 
 static void pushfuncname (vmk_State *L, vmk_Debug *ar) {
   if (pushglobalfuncname(L, ar)) {  /* try first a global name */
-    vmk_pushfstring(L, "fn '%s'", vmk_tostring(L, -1));
+    vmk_pushfstring(L, "function '%s'", vmk_tostring(L, -1));
     vmk_remove(L, -2);  /* remove name */
   }
   else if (*ar->namewhat != '\0')  /* is there a name from code? */
@@ -108,7 +108,7 @@ static void pushfuncname (vmk_State *L, vmk_Debug *ar) {
   else if (*ar->what == 'm')  /* main? */
       vmk_pushliteral(L, "main chunk");
   else if (*ar->what != 'C')  /* for Vmk functions, use <file:line> */
-    vmk_pushfstring(L, "fn <%s:%d>", ar->short_src, ar->linedefined);
+    vmk_pushfstring(L, "function <%s:%d>", ar->short_src, ar->linedefined);
   else  /* nothing left... */
     vmk_pushliteral(L, "?");
 }
@@ -211,12 +211,12 @@ static void tag_error (vmk_State *L, int arg, int tag) {
 
 
 /*
-** The use of 'vmk_pushfstring' ensures this fn does not
+** The use of 'vmk_pushfstring' ensures this function does not
 ** need reserved stack space when called.
 */
 VMKLIB_API void vmkL_where (vmk_State *L, int level) {
   vmk_Debug ar;
-  if (vmk_getstack(L, level, &ar)) {  /* check fn at level */
+  if (vmk_getstack(L, level, &ar)) {  /* check function at level */
     vmk_getinfo(L, "Sl", &ar);  /* get info about it */
     if (ar.currentline > 0) {  /* is there info? */
       vmk_pushfstring(L, "%s:%d: ", ar.short_src, ar.currentline);
@@ -228,7 +228,7 @@ VMKLIB_API void vmkL_where (vmk_State *L, int level) {
 
 
 /*
-** Again, the use of 'vmk_pushvfstring' ensures this fn does
+** Again, the use of 'vmk_pushvfstring' ensures this function does
 ** not need reserved stack space when called. (At worst, it generates
 ** an error with "stack overflow" instead of the given message.)
 */
@@ -611,7 +611,7 @@ VMKLIB_API void vmkL_pushresultsize (vmkL_Buffer *B, size_t sz) {
 
 
 /*
-** 'vmkL_addvalue' is the only fn in the Buffer system where the
+** 'vmkL_addvalue' is the only function in the Buffer system where the
 ** box (if existent) is not on the top of the stack. So, instead of
 ** calling 'vmkL_addlstring', it replicates the code using -2 as the
 ** last argument to 'prepbuffsize', signaling that the box is (or will
@@ -936,7 +936,7 @@ VMKLIB_API const char *vmkL_tolstring (vmk_State *L, int idx, size_t *len) {
 
 /*
 ** set functions from list 'l' into table at top - 'nup'; each
-** fn gets the 'nup' elements at the top as upvalues.
+** function gets the 'nup' elements at the top as upvalues.
 ** Returns with only the table at the stack.
 */
 VMKLIB_API void vmkL_setfuncs (vmk_State *L, const vmkL_Reg *l, int nup) {
@@ -987,7 +987,7 @@ VMKLIB_API void vmkL_requiref (vmk_State *L, const char *modname,
   if (!vmk_toboolean(L, -1)) {  /* package not already loaded? */
     vmk_pop(L, 1);  /* remove field */
     vmk_pushcfunction(L, openf);
-    vmk_pushstring(L, modname);  /* argument to open fn */
+    vmk_pushstring(L, modname);  /* argument to open function */
     vmk_call(L, 1, 1);  /* call 'openf' to open module */
     vmk_pushvalue(L, -1);  /* make copy of module (call result) */
     vmk_setfield(L, -3, modname);  /* LOADED[modname] = module */
@@ -1083,7 +1083,7 @@ static void warnfoff (void *ud, const char *message, int tocont) {
 
 /*
 ** Writes the message and handle 'tocont', finishing the message
-** if needed and setting the next warn fn.
+** if needed and setting the next warn function.
 */
 static void warnfcont (void *ud, const char *message, int tocont) {
   vmk_State *L = (vmk_State *)ud;

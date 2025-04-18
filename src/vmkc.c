@@ -121,7 +121,7 @@ static int doargs(int argc, char* argv[])
  return i;
 }
 
-#define FUNCTION "(fn()end)();\n"
+#define FUNCTION "(function()end)();\n"
 
 static const char* reader(vmk_State* L, void* ud, size_t* size)
 {
@@ -675,13 +675,13 @@ static void PrintHeader(const Proto* f)
  else
   s="(string)";
  printf("\n%s <%s:%d,%d> (%d instruction%s at %p)\n",
-	(f->linedefined==0)?"main":"fn",s,
+	(f->linedefined==0)?"main":"function",s,
 	f->linedefined,f->lastlinedefined,
 	S(f->sizecode),VOID(f));
  printf("%d%s param%s, %d slot%s, %d upvalue%s, ",
 	(int)(f->numparams),f->is_vararg?"+":"",SS(f->numparams),
 	S(f->maxstacksize),S(f->sizeupvalues));
- printf("%d own%s, %d constant%s, %d fn%s\n",
+ printf("%d local%s, %d constant%s, %d function%s\n",
 	S(f->sizelocvars),S(f->sizek),S(f->sizep));
 }
 

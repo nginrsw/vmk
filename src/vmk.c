@@ -58,7 +58,7 @@ static void setsignal (int sig, void (*handler)(int)) {
 
 
 /*
-** Hook set by signal fn to stop the interpreter.
+** Hook set by signal function to stop the interpreter.
 */
 static void lstop (vmk_State *L, vmk_Debug *ar) {
   (void)ar;  /* unused arg. */
@@ -70,7 +70,7 @@ static void lstop (vmk_State *L, vmk_Debug *ar) {
 /*
 ** Function to be called at a C signal. Because a C signal cannot
 ** just change a Vmk state (as there is no proper synchronization),
-** this fn only sets a hook that, when called, will stop the
+** this function only sets a hook that, when called, will stop the
 ** interpreter.
 */
 static void laction (int i) {
@@ -148,14 +148,14 @@ static int msghandler (vmk_State *L) {
 
 
 /*
-** Interface to 'vmk_pcall', which sets appropriate message fn
+** Interface to 'vmk_pcall', which sets appropriate message function
 ** and C-signal handler. Used to run all chunks.
 */
 static int docall (vmk_State *L, int narg, int nres) {
   int status;
-  int base = vmk_gettop(L) - narg;  /* fn index */
+  int base = vmk_gettop(L) - narg;  /* function index */
   vmk_pushcfunction(L, msghandler);  /* push message handler */
-  vmk_insert(L, base);  /* put it under fn and args */
+  vmk_insert(L, base);  /* put it under function and args */
   globalL = L;  /* to be available to 'laction' */
   setsignal(SIGINT, laction);  /* set C-signal handler */
   status = vmk_pcall(L, narg, nres, base);
@@ -564,7 +564,7 @@ static int multiline (vmk_State *L) {
 /*
 ** Read a line and try to load (compile) it first as an expression (by
 ** adding "return " in front of it) and second as a statement. Return
-** the final status of load/call with the resulting fn (if any)
+** the final status of load/call with the resulting function (if any)
 ** in the top of the stack.
 */
 static int loadline (vmk_State *L) {
@@ -581,7 +581,7 @@ static int loadline (vmk_State *L) {
 
 
 /*
-** Prints (calling the Vmk 'print' fn) any values on the stack
+** Prints (calling the Vmk 'print' function) any values on the stack
 */
 static void l_print (vmk_State *L) {
   int n = vmk_gettop(L);

@@ -297,7 +297,7 @@ static int vmkB_pairs (vmk_State *L) {
 
 
 /*
-** Traversal fn for 'ipairs'
+** Traversal function for 'ipairs'
 */
 static int ipairsaux (vmk_State *L) {
   vmk_Integer i = vmkL_checkinteger(L, 2);
@@ -308,12 +308,12 @@ static int ipairsaux (vmk_State *L) {
 
 
 /*
-** 'ipairs' fn. Returns 'ipairsaux', given "table", 0.
+** 'ipairs' function. Returns 'ipairsaux', given "table", 0.
 ** (The given "table" may not be a table.)
 */
 static int vmkB_ipairs (vmk_State *L) {
   vmkL_checkany(L, 1);
-  vmk_pushcfunction(L, ipairsaux);  /* iteration fn */
+  vmk_pushcfunction(L, ipairsaux);  /* iteration function */
   vmk_pushvalue(L, 1);  /* state */
   vmk_pushinteger(L, 0);  /* initial value */
   return 3;
@@ -323,7 +323,7 @@ static int vmkB_ipairs (vmk_State *L) {
 static int load_aux (vmk_State *L, int status, int envidx) {
   if (l_likely(status == VMK_OK)) {
     if (envidx != 0) {  /* 'env' parameter? */
-      vmk_pushvalue(L, envidx);  /* environment for loaded fn */
+      vmk_pushvalue(L, envidx);  /* environment for loaded function */
       if (!vmk_setupvalue(L, -2, 1))  /* set it as 1st upvalue */
         vmk_pop(L, 1);  /* remove 'env' if not used by previous call */
     }
@@ -348,7 +348,7 @@ static int vmkB_loadfile (vmk_State *L) {
 
 /*
 ** {======================================================
-** Generic Read fn
+** Generic Read function
 ** =======================================================
 */
 
@@ -362,7 +362,7 @@ static int vmkB_loadfile (vmk_State *L) {
 
 
 /*
-** Reader for generic 'load' fn: 'vmk_load' uses the
+** Reader for generic 'load' function: 'vmk_load' uses the
 ** stack for internal stuff, so the reader cannot change the
 ** stack top. Instead, it keeps its resulting string in a
 ** reserved slot inside the stack.
@@ -370,7 +370,7 @@ static int vmkB_loadfile (vmk_State *L) {
 static const char *generic_reader (vmk_State *L, void *ud, size_t *size) {
   (void)(ud);  /* not used */
   vmkL_checkstack(L, 2, "too many nested functions");
-  vmk_pushvalue(L, 1);  /* get fn */
+  vmk_pushvalue(L, 1);  /* get function */
   vmk_call(L, 0, 1);  /* call it */
   if (vmk_isnil(L, -1)) {
     vmk_pop(L, 1);  /* pop result */
@@ -378,7 +378,7 @@ static const char *generic_reader (vmk_State *L, void *ud, size_t *size) {
     return NULL;
   }
   else if (l_unlikely(!vmk_isstring(L, -1)))
-    vmkL_error(L, "reader fn must return a string");
+    vmkL_error(L, "reader function must return a string");
   vmk_replace(L, RESERVEDSLOT);  /* save string in reserved slot */
   return vmk_tolstring(L, RESERVEDSLOT, size);
 }
@@ -394,7 +394,7 @@ static int vmkB_load (vmk_State *L) {
     const char *chunkname = vmkL_optstring(L, 2, s);
     status = vmkL_loadbufferx(L, s, l, chunkname, mode);
   }
-  else {  /* loading from a reader fn */
+  else {  /* loading from a reader function */
     const char *chunkname = vmkL_optstring(L, 2, "=(load)");
     vmkL_checktype(L, 1, VMK_TFUNCTION);
     vmk_settop(L, RESERVEDSLOT);  /* create reserved slot */
@@ -452,7 +452,7 @@ static int vmkB_select (vmk_State *L) {
 
 
 /*
-** Continuation fn for 'pcall' and 'xpcall'. Both functions
+** Continuation function for 'pcall' and 'xpcall'. Both functions
 ** already pushed a 'true' before doing the call, so in case of success
 ** 'finishpcall' only has to return everything in the stack minus
 ** 'extra' values (where 'extra' is exactly the number of items to be
@@ -481,16 +481,16 @@ static int vmkB_pcall (vmk_State *L) {
 
 /*
 ** Do a protected call with error handling. After 'vmk_rotate', the
-** stack will have <f, err, true, f, [args...]>; so, the fn passes
+** stack will have <f, err, true, f, [args...]>; so, the function passes
 ** 2 to 'finishpcall' to skip the 2 first values when returning results.
 */
 static int vmkB_xpcall (vmk_State *L) {
   int status;
   int n = vmk_gettop(L);
-  vmkL_checktype(L, 2, VMK_TFUNCTION);  /* check error fn */
+  vmkL_checktype(L, 2, VMK_TFUNCTION);  /* check error function */
   vmk_pushboolean(L, 1);  /* first result */
-  vmk_pushvalue(L, 1);  /* fn */
-  vmk_rotate(L, 3, 2);  /* move them below fn's arguments */
+  vmk_pushvalue(L, 1);  /* function */
+  vmk_rotate(L, 3, 2);  /* move them below function's arguments */
   status = vmk_pcallk(L, n - 2, VMK_MULTRET, 2, 2, finishpcall);
   return finishpcall(L, status, 2);
 }

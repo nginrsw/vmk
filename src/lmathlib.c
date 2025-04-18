@@ -132,7 +132,7 @@ static int math_fmod (vmk_State *L) {
 
 
 /*
-** next fn does not use 'modf', avoiding problems with 'double*'
+** next function does not use 'modf', avoiding problems with 'double*'
 ** (which is not compatible with 'float*') when vmk_Number is not
 ** 'double'.
 */

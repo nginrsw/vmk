@@ -96,8 +96,8 @@ static int vmkB_cocreate (vmk_State *L) {
   vmk_State *NL;
   vmkL_checktype(L, 1, VMK_TFUNCTION);
   NL = vmk_newthread(L);
-  vmk_pushvalue(L, 1);  /* move fn to top */
-  vmk_xmove(L, NL, 1);  /* move fn from L to NL */
+  vmk_pushvalue(L, 1);  /* move function to top */
+  vmk_xmove(L, NL, 1);  /* move function from L to NL */
   return 1;
 }
 

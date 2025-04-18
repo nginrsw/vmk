@@ -55,7 +55,7 @@ VMKI_FUNC size_t vmkZ_read (ZIO* z, void *b, size_t n);	/* read next n bytes */
 struct Zio {
   size_t n;			/* bytes still unread */
   const char *p;		/* current position in buffer */
-  vmk_Reader reader;		/* reader fn */
+  vmk_Reader reader;		/* reader function */
   void *data;			/* additional data */
   vmk_State *L;			/* Vmk state (for reader) */
 };

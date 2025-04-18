@@ -207,7 +207,7 @@ static LStream *newprefile (vmk_State *L) {
 
 
 /*
-** Calls the 'close' fn from a file handle. The 'volatile' avoids
+** Calls the 'close' function from a file handle. The 'volatile' avoids
 ** a bug in some versions of the Clang compiler (e.g., clang 3.0 for
 ** 32 bits).
 */
@@ -241,7 +241,7 @@ static int f_gc (vmk_State *L) {
 
 
 /*
-** fn to close regular files
+** function to close regular files
 */
 static int io_fclose (vmk_State *L) {
   LStream *p = tolstream(L);
@@ -279,7 +279,7 @@ static int io_open (vmk_State *L) {
 
 
 /*
-** fn to close 'popen' files
+** function to close 'popen' files
 */
 static int io_pclose (vmk_State *L) {
   LStream *p = tolstream(L);
@@ -355,8 +355,8 @@ static int io_readline (vmk_State *L);
 #define MAXARGLINE	250
 
 /*
-** Auxiliary fn to create the iteration fn for 'lines'.
-** The iteration fn is a closure over 'io_readline', with
+** Auxiliary function to create the iteration function for 'lines'.
+** The iteration function is a closure over 'io_readline', with
 ** the following upvalues:
 ** 1) The file being read (first value in the stack)
 ** 2) the number of arguments to read
@@ -382,7 +382,7 @@ static int f_lines (vmk_State *L) {
 
 
 /*
-** Return an iteration fn for 'io.lines'. If file has to be
+** Return an iteration function for 'io.lines'. If file has to be
 ** closed, also returns the file itself as a second result (to be
 ** closed as the state at the exit of a generic for).
 */
@@ -401,7 +401,7 @@ static int io_lines (vmk_State *L) {
     vmk_replace(L, 1);  /* put file at index 1 */
     toclose = 1;  /* close it after iteration */
   }
-  aux_lines(L, toclose);  /* push iteration fn */
+  aux_lines(L, toclose);  /* push iteration function */
   if (toclose) {
     vmk_pushnil(L);  /* state */
     vmk_pushnil(L);  /* control */
@@ -628,7 +628,7 @@ static int f_read (vmk_State *L) {
 
 
 /*
-** Iteration fn for 'lines'.
+** Iteration function for 'lines'.
 */
 static int io_readline (vmk_State *L) {
   LStream *p = (LStream *)vmk_touserdata(L, vmk_upvalueindex(1));
@@ -805,7 +805,7 @@ static void createmeta (vmk_State *L) {
 
 
 /*
-** fn to (not) close the standard files stdin, stdout, and stderr
+** function to (not) close the standard files stdin, stdout, and stderr
 */
 static int io_noclose (vmk_State *L) {
   LStream *p = tolstream(L);

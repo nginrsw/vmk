@@ -273,14 +273,14 @@ static void set2 (vmk_State *L, IdxT i, IdxT j) {
 ** index 'b' (according to the order of the sort).
 */
 static int sort_comp (vmk_State *L, int a, int b) {
-  if (vmk_isnil(L, 2))  /* no fn? */
+  if (vmk_isnil(L, 2))  /* no function? */
     return vmk_compare(L, a, b, VMK_OPLT);  /* a < b */
-  else {  /* fn */
+  else {  /* function */
     int res;
-    vmk_pushvalue(L, 2);    /* push fn */
-    vmk_pushvalue(L, a-1);  /* -1 to compensate fn */
-    vmk_pushvalue(L, b-2);  /* -2 to compensate fn and 'a' */
-    vmk_call(L, 2, 1);      /* call fn */
+    vmk_pushvalue(L, 2);    /* push function */
+    vmk_pushvalue(L, a-1);  /* -1 to compensate function */
+    vmk_pushvalue(L, b-2);  /* -2 to compensate function and 'a' */
+    vmk_call(L, 2, 1);      /* call function */
     res = vmk_toboolean(L, -1);  /* get result */
     vmk_pop(L, 1);          /* pop result */
     return res;
@@ -303,14 +303,14 @@ static IdxT partition (vmk_State *L, IdxT lo, IdxT up) {
     /* next loop: repeat ++i while a[i] < P */
     while ((void)vmk_geti(L, 1, ++i), sort_comp(L, -1, -2)) {
       if (l_unlikely(i == up - 1))  /* a[i] < P  but a[up - 1] == P  ?? */
-        vmkL_error(L, "invalid order fn for sorting");
+        vmkL_error(L, "invalid order function for sorting");
       vmk_pop(L, 1);  /* remove a[i] */
     }
     /* after the loop, a[i] >= P and a[lo .. i - 1] < P */
     /* next loop: repeat --j while P < a[j] */
     while ((void)vmk_geti(L, 1, --j), sort_comp(L, -3, -1)) {
       if (l_unlikely(j < i))  /* j < i  but  a[j] > P ?? */
-        vmkL_error(L, "invalid order fn for sorting");
+        vmkL_error(L, "invalid order function for sorting");
       vmk_pop(L, 1);  /* remove a[j] */
     }
     /* after the loop, a[j] <= P and a[j + 1 .. up] >= P */
@@ -340,7 +340,7 @@ static IdxT choosePivot (IdxT lo, IdxT up, unsigned int rnd) {
 
 
 /*
-** Quicksort algorithm (recursive fn)
+** Quicksort algorithm (recursive function)
 */
 static void auxsort (vmk_State *L, IdxT lo, IdxT up,
                                    unsigned int rnd) {
@@ -401,7 +401,7 @@ static int sort (vmk_State *L) {
   if (n > 1) {  /* non-trivial interval? */
     vmkL_argcheck(L, n < INT_MAX, 1, "array too big");
     if (!vmk_isnoneornil(L, 2))  /* is there a 2nd argument? */
-      vmkL_checktype(L, 2, VMK_TFUNCTION);  /* must be a fn */
+      vmkL_checktype(L, 2, VMK_TFUNCTION);  /* must be a function */
     vmk_settop(L, 2);  /* make sure there are two arguments */
     auxsort(L, 1, (IdxT)n, 0);
   }

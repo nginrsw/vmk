@@ -25,7 +25,7 @@ language.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/nginrsw/vmk.git
+   git clone https://codeberg.org/nginrsw/vmk.git
    cd vmk
    ```
 
@@ -36,7 +36,7 @@ language.
 
 3. After building, create a symbolic link to install the program:
    ```bash
-   sudo ln -s /path/to/program/src/vmk /usr/local/bin/
+   sudo ln -s /path/to/program/vmk/src/vmk /usr/local/bin/
    ```
 
    Replace `/path/to/program` with the actual path to where the compiled program
@@ -56,7 +56,7 @@ vmk file.vmk
 ## Transpiling Between Lua and VMK
 
 If you wish to transpile code from Lua to VMK or from VMK to Lua, I’ve prepared
-executable files located in the `transpiler` folder.
+executable files located in the `transpiler` directory.
 
 You can easily run these using the following commands:
 
@@ -73,3 +73,19 @@ You can easily run these using the following commands:
 
 These commands will automatically convert all of your code between the two
 languages, making it easier to switch between them.
+
+---
+
+## Learn VMK in 15 Minutes
+
+If you're new to VMK and want a quick overview of how to write code in this language, a brief hands-on guide is available. You can follow the “Learn VMK in 15 Minutes” tutorial located in the [Learn VMK in 15 Minutes](Learn%20VMK%20in%2015%20Minutes/) directory.
+
+This tutorial provides a concise and practical introduction to VMK, allowing you to get familiar with its syntax and basic concepts in no time. You can follow the tutorial offline directly from this directory by opening the `Learn Vmk in 15 Minutes.html` file in your browser.
+
+For example, you can run the following command in your terminal:
+
+```bash
+chromium 'Learn Vmk in 15 Minutes.html'
+```
+
+Feel free to replace `chromium` with your preferred browser command, like `firefox` or `brave`.

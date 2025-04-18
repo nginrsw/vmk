@@ -204,7 +204,7 @@ static void loadProtos (LoadState *S, Proto *f) {
 
 
 /*
-** Load the upvalues for a fn. The names must be filled first,
+** Load the upvalues for a function. The names must be filled first,
 ** because the filling of the other fields can raise read errors and
 ** the creation of the error message can call an emergency collection;
 ** in that case all prototypes must be consistent for the GC.

@@ -35,7 +35,7 @@ typedef enum {
              (string is fixed by the lexer) */
   VNONRELOC,  /* expression has its value in a fixed register;
                  info = result register */
-  VLOCAL,  /* own variable; var.ridx = register index;
+  VLOCAL,  /* local variable; var.ridx = register index;
               var.vidx = relative index in 'actvar.arr'  */
   VUPVAL,  /* upvalue variable; info = index of upvalue in 'upvalues' */
   VCONST,  /* compile-time <const> variable;
@@ -56,7 +56,7 @@ typedef enum {
             info = pc of corresponding jump instruction */
   VRELOC,  /* expression can put result in any register;
               info = instruction pc */
-  VCALL,  /* expression is a fn call; info = instruction pc */
+  VCALL,  /* expression is a function call; info = instruction pc */
   VVARARG  /* vararg expression; info = instruction pc */
 } expkind;
 
@@ -76,7 +76,7 @@ typedef struct expdesc {
       short idx;  /* index (R or "long" K) */
       lu_byte t;  /* table (register or upvalue) */
     } ind;
-    struct {  /* for own variables */
+    struct {  /* for local variables */
       lu_byte ridx;  /* register holding the variable */
       unsigned short vidx;  /* compiler index (in 'actvar.arr')  */
     } var;
@@ -92,7 +92,7 @@ typedef struct expdesc {
 #define RDKTOCLOSE	2   /* to-be-closed */
 #define RDKCTC		3   /* compile-time constant */
 
-/* description of an active own variable */
+/* description of an active local variable */
 typedef union Vardesc {
   struct {
     TValuefields;  /* constant value (if it is a compile-time constant) */
@@ -126,7 +126,7 @@ typedef struct Labellist {
 
 /* dynamic structures used by the parser */
 typedef struct Dyndata {
-  struct {  /* list of all active own variables */
+  struct {  /* list of all active local variables */
     Vardesc *arr;
     int n;
     int size;
@@ -140,10 +140,10 @@ typedef struct Dyndata {
 struct BlockCnt;  /* defined in lparser.c */
 
 
-/* state needed to generate code for a given fn */
+/* state needed to generate code for a given function */
 typedef struct FuncState {
-  Proto *f;  /* current fn header */
-  struct FuncState *prev;  /* enclosing fn */
+  Proto *f;  /* current function header */
+  struct FuncState *prev;  /* enclosing function */
   struct LexState *ls;  /* lexical state */
   struct BlockCnt *bl;  /* chain of current blocks */
   int pc;  /* next position to code (equivalent to 'ncode') */
@@ -152,14 +152,14 @@ typedef struct FuncState {
   int nk;  /* number of elements in 'k' */
   int np;  /* number of elements in 'p' */
   int nabslineinfo;  /* number of elements in 'abslineinfo' */
-  int firstlocal;  /* index of first own var (in Dyndata array) */
+  int firstlocal;  /* index of first local var (in Dyndata array) */
   int firstlabel;  /* index of first label (in 'dyd->label->arr') */
   short ndebugvars;  /* number of elements in 'f->locvars' */
-  lu_byte nactvar;  /* number of active own variables */
+  lu_byte nactvar;  /* number of active local variables */
   lu_byte nups;  /* number of upvalues */
   lu_byte freereg;  /* first free register */
   lu_byte iwthabs;  /* instructions issued since last absolute line info */
-  lu_byte needclose;  /* fn needs to close upvalues when returning */
+  lu_byte needclose;  /* function needs to close upvalues when returning */
 } FuncState;
 
 

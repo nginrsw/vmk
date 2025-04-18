@@ -238,7 +238,7 @@ static const char *l_str2dloc (const char *s, vmk_Number *result, int mode) {
 /*
 ** Convert string 's' to a Vmk number (put in 'result') handling the
 ** current locale.
-** This fn accepts both the current locale or a dot as the radix
+** This function accepts both the current locale or a dot as the radix
 ** mark. If the conversion fails, it may mean number has a dot but
 ** locale accepts something else. In that case, the code copies 's'
 ** to a buffer (because 's' is read-only), changes the dot to the
@@ -474,7 +474,7 @@ static void addnum2buff (BuffFS *buff, TValue *num) {
 
 
 /*
-** this fn handles only '%d', '%c', '%f', '%p', '%s', and '%%'
+** this function handles only '%d', '%c', '%f', '%p', '%s', and '%%'
    conventional formats, plus Vmk-specific '%I' and '%U'
 */
 const char *vmkO_pushvfstring (vmk_State *L, const char *fmt, va_list argp) {

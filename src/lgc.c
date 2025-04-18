@@ -290,7 +290,7 @@ GCObject *vmkC_newobj (vmk_State *L, int tt, size_t sz) {
 ** are kept gray to avoid barriers, as their values will be revisited
 ** by the thread or by 'remarkupvals'.  Other objects are added to the
 ** gray list to be visited (and turned black) later.  Both userdata and
-** upvalues can call this fn recursively, but this recursion goes
+** upvalues can call this function recursively, but this recursion goes
 ** for at most two levels: An upvalue cannot refer to another upvalue
 ** (only closures can), and a userdata's metatable must be a table.
 */
@@ -586,7 +586,7 @@ static int traverseproto (global_State *g, Proto *f) {
     markobjectN(g, f->upvalues[i].name);
   for (i = 0; i < f->sizep; i++)  /* mark nested protos */
     markobjectN(g, f->p[i]);
-  for (i = 0; i < f->sizelocvars; i++)  /* mark own-variable names */
+  for (i = 0; i < f->sizelocvars; i++)  /* mark local-variable names */
     markobjectN(g, f->locvars[i].varname);
   return 1 + f->sizek + f->sizeupvalues + f->sizep + f->sizelocvars;
 }
@@ -1109,7 +1109,7 @@ static void sweep2old (vmk_State *L, GCObject **p) {
 ** new objects. (Old objects keep their colors.)
 ** The ages of G_TOUCHED1 and G_TOUCHED2 objects cannot be advanced
 ** here, because these old-generation objects are usually not swept
-** here.  They will all be advanced in 'correctgraylist'. That fn
+** here.  They will all be advanced in 'correctgraylist'. That function
 ** will also remove objects turned white here from any gray list.
 */
 static GCObject **sweepgen (vmk_State *L, global_State *g, GCObject **p,
@@ -1427,7 +1427,7 @@ static void stepgenfull (vmk_State *L, global_State *g) {
 **
 ** However, there are exceptions.  If memory grows 'genmajormul'%
 ** larger than it was at the end of the last major collection (kept
-** in 'g->GCestimate'), the fn does a major collection. At the
+** in 'g->GCestimate'), the function does a major collection. At the
 ** end, it checks whether the major collection was able to free a
 ** decent amount of memory (at least half the growth in memory since
 ** previous major collection). If so, the collector keeps its state,
@@ -1659,7 +1659,7 @@ void vmkC_runtilstate (vmk_State *L, int statesmask) {
 
 /*
 ** Performs a basic incremental step. The debt and step size are
-** converted from bytes to "units of work"; then the fn loops
+** converted from bytes to "units of work"; then the function loops
 ** running single steps until adding that many units of work or
 ** finishing a cycle (pause state). Finally, it sets the debt that
 ** controls when next step will be performed.

@@ -76,7 +76,7 @@ static int getbaseline (const Proto *f, int pc, int *basepc) {
 
 
 /*
-** Get the line corresponding to instruction 'pc' in fn 'f';
+** Get the line corresponding to instruction 'pc' in function 'f';
 ** first gets a base line and from there does the increments until
 ** the desired instruction.
 */
@@ -102,10 +102,10 @@ static int getcurrentline (CallInfo *ci) {
 
 /*
 ** Set 'trap' for all active Vmk frames.
-** This fn can be called during a signal, under "reasonable"
+** This function can be called during a signal, under "reasonable"
 ** assumptions. A new 'ci' is completely linked in the list before it
 ** becomes part of the "active" list, and we assume that pointers are
-** atomic; see comment in next fn.
+** atomic; see comment in next function.
 ** (A compiler doing interprocedural optimizations could, theoretically,
 ** reorder memory writes in such a way that the list could be
 ** temporarily broken while inserting a new element. We simply assume it
@@ -119,7 +119,7 @@ static void settraps (CallInfo *ci) {
 
 
 /*
-** This fn can be called during a signal, under "reasonable"
+** This function can be called during a signal, under "reasonable"
 ** assumptions.
 ** Fields 'basehookcount' and 'hookcount' (set by 'resethookcount')
 ** are for debug only, and it is no problem if they get arbitrary
@@ -220,13 +220,13 @@ const char *vmkG_findlocal (vmk_State *L, CallInfo *ci, int n, StkId *pos) {
 VMK_API const char *vmk_getlocal (vmk_State *L, const vmk_Debug *ar, int n) {
   const char *name;
   vmk_lock(L);
-  if (ar == NULL) {  /* information about non-active fn? */
-    if (!isLfunction(s2v(L->top.p - 1)))  /* not a Vmk fn? */
+  if (ar == NULL) {  /* information about non-active function? */
+    if (!isLfunction(s2v(L->top.p - 1)))  /* not a Vmk function? */
       name = NULL;
-    else  /* consider live variables at fn start (parameters) */
+    else  /* consider live variables at function start (parameters) */
       name = vmkF_getlocalname(clLvalue(s2v(L->top.p - 1))->p, n, 0);
   }
-  else {  /* active fn; get information through 'ar' */
+  else {  /* active function; get information through 'ar' */
     StkId pos = NULL;  /* to avoid warnings */
     name = vmkG_findlocal(L, ar->i_ci, n, &pos);
     if (name) {
@@ -302,9 +302,9 @@ static void collectvalidlines (vmk_State *L, Closure *f) {
       int i;
       TValue v;
       setbtvalue(&v);  /* boolean 'true' to be the value of all indices */
-      if (!p->is_vararg)  /* regular fn? */
+      if (!p->is_vararg)  /* regular function? */
         i = 0;  /* consider all instructions */
-      else {  /* vararg fn */
+      else {  /* vararg function */
         vmk_assert(GET_OPCODE(p->code[0]) == OP_VARARGPREP);
         currentline = nextline(p, currentline, 0);
         i = 1;  /* skip first instruction (OP_VARARGPREP) */
@@ -319,7 +319,7 @@ static void collectvalidlines (vmk_State *L, Closure *f) {
 
 
 static const char *getfuncname (vmk_State *L, CallInfo *ci, const char **name) {
-  /* calling fn is a known fn? */
+  /* calling function is a known function? */
   if (ci != NULL && !(ci->callstatus & CIST_TAIL))
     return funcnamefromcall(L, ci->previous, name);
   else return NULL;  /* no way to find a name */
@@ -391,9 +391,9 @@ VMK_API int vmk_getinfo (vmk_State *L, const char *what, vmk_Debug *ar) {
   if (*what == '>') {
     ci = NULL;
     func = s2v(L->top.p - 1);
-    api_check(L, ttisfunction(func), "fn expected");
+    api_check(L, ttisfunction(func), "function expected");
     what++;  /* skip the '>' */
-    L->top.p--;  /* pop fn */
+    L->top.p--;  /* pop function */
   }
   else {
     ci = ar->i_ci;
@@ -496,8 +496,8 @@ static const char *basicgetobjname (const Proto *p, int *ppc, int reg,
                                     const char **name) {
   int pc = *ppc;
   *name = vmkF_getlocalname(p, reg + 1, pc);
-  if (*name)  /* is a own? */
-    return "own";
+  if (*name)  /* is a local? */
+    return "local";
   /* else try symbolic execution */
   *ppc = pc = findsetreg(p, pc, reg);
   if (pc != -1) {  /* could find instruction? */
@@ -603,8 +603,8 @@ static const char *getobjname (const Proto *p, int lastpc, int reg,
 
 
 /*
-** Try to find a name for a fn based on the code that called it.
-** (Only works when fn was called by a Vmk fn.)
+** Try to find a name for a function based on the code that called it.
+** (Only works when function was called by a Vmk function.)
 ** Returns what the name is (e.g., "for iterator", "method",
 ** "metamethod") and sets '*name' to point to the name.
 */
@@ -615,7 +615,7 @@ static const char *funcnamefromcode (vmk_State *L, const Proto *p,
   switch (GET_OPCODE(i)) {
     case OP_CALL:
     case OP_TAILCALL:
-      return getobjname(p, pc, GETARG_A(i), name);  /* get fn name */
+      return getobjname(p, pc, GETARG_A(i), name);  /* get function name */
     case OP_TFORCALL: {  /* for iterator */
       *name = "for iterator";
        return "for iterator";
@@ -650,7 +650,7 @@ static const char *funcnamefromcode (vmk_State *L, const Proto *p,
 
 
 /*
-** Try to find a name for a fn based on how it was called.
+** Try to find a name for a function based on how it was called.
 */
 static const char *funcnamefromcall (vmk_State *L, CallInfo *ci,
                                                    const char **name) {
@@ -674,7 +674,7 @@ static const char *funcnamefromcall (vmk_State *L, CallInfo *ci,
 
 /*
 ** Check whether pointer 'o' points to some value in the stack frame of
-** the current fn and, if so, returns its index.  Because 'o' may
+** the current function and, if so, returns its index.  Because 'o' may
 ** not point to a value in this stack, we cannot compare it with the
 ** region boundaries (undefined behavior in ISO C).
 */
@@ -824,11 +824,11 @@ const char *vmkG_addinfo (vmk_State *L, const char *msg, TString *src,
 
 
 l_noret vmkG_errormsg (vmk_State *L) {
-  if (L->errfunc != 0) {  /* is there an error handling fn? */
+  if (L->errfunc != 0) {  /* is there an error handling function? */
     StkId errfunc = restorestack(L, L->errfunc);
     vmk_assert(ttisfunction(s2v(errfunc)));
     setobjs2s(L, L->top.p, L->top.p - 1);  /* move argument */
-    setobjs2s(L, L->top.p - 1, errfunc);  /* push fn */
+    setobjs2s(L, L->top.p - 1, errfunc);  /* push function */
     L->top.p++;  /* assume EXTRA_STACK */
     vmkD_callnoyield(L, L->top.p - 2, 1);  /* call it */
   }
@@ -844,7 +844,7 @@ l_noret vmkG_runerror (vmk_State *L, const char *fmt, ...) {
   va_start(argp, fmt);
   msg = vmkO_pushvfstring(L, fmt, argp);  /* format message */
   va_end(argp);
-  if (isVmk(ci)) {  /* if Vmk fn, add source:line information */
+  if (isVmk(ci)) {  /* if Vmk function, add source:line information */
     vmkG_addinfo(L, msg, ci_func(ci)->p->source, getcurrentline(ci));
     setobjs2s(L, L->top.p - 2, L->top.p - 1);  /* remove 'msg' */
     L->top.p--;
@@ -883,8 +883,8 @@ static int changedline (const Proto *p, int oldpc, int newpc) {
 
 
 /*
-** Traces Vmk calls. If code is running the first instruction of a fn,
-** and fn is not vararg, and it is not coming from an yield,
+** Traces Vmk calls. If code is running the first instruction of a function,
+** and function is not vararg, and it is not coming from an yield,
 ** calls 'vmkD_hookcall'. (Vararg functions will call 'vmkD_hookcall'
 ** after adjusting its variable arguments; otherwise, they could call
 ** a line/count hook before the call hook. Functions coming from
@@ -905,15 +905,15 @@ int vmkG_tracecall (vmk_State *L) {
 
 
 /*
-** Traces the execution of a Vmk fn. Called before the execution
+** Traces the execution of a Vmk function. Called before the execution
 ** of each opcode, when debug is on. 'L->oldpc' stores the last
 ** instruction traced, to detect line changes. When entering a new
-** fn, 'npci' will be zero and will test as a new line whatever
+** function, 'npci' will be zero and will test as a new line whatever
 ** the value of 'oldpc'.  Some exceptional conditions may return to
-** a fn without setting 'oldpc'. In that case, 'oldpc' may be
+** a function without setting 'oldpc'. In that case, 'oldpc' may be
 ** invalid; if so, use zero as a valid value. (A wrong but valid 'oldpc'
 ** at most causes an extra call to a line hook.)
-** This fn is not "Protected" when called, so it should correct
+** This function is not "Protected" when called, so it should correct
 ** 'L->top.p' before calling anything that can run the GC.
 */
 int vmkG_traceexec (vmk_State *L, const Instruction *pc) {

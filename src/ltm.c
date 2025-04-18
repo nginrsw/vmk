@@ -30,7 +30,7 @@ static const char udatatypename[] = "userdata";
 VMKI_DDEF const char *const vmkT_typenames_[VMK_TOTALTYPES] = {
   "no value",
   "nil", "boolean", udatatypename, "number",
-  "string", "table", "fn", udatatypename, "thread",
+  "string", "table", "function", udatatypename, "thread",
   "upvalue", "proto" /* these last cases are used for tests only */
 };
 
@@ -54,7 +54,7 @@ void vmkT_init (vmk_State *L) {
 
 
 /*
-** fn to be used with macro "fasttm": optimized for absence of
+** function to be used with macro "fasttm": optimized for absence of
 ** tag methods
 */
 const TValue *vmkT_gettm (Table *events, TMS event, TString *ename) {
@@ -103,7 +103,7 @@ const char *vmkT_objtypename (vmk_State *L, const TValue *o) {
 void vmkT_callTM (vmk_State *L, const TValue *f, const TValue *p1,
                   const TValue *p2, const TValue *p3) {
   StkId func = L->top.p;
-  setobj2s(L, func, f);  /* push fn (assume EXTRA_STACK) */
+  setobj2s(L, func, f);  /* push function (assume EXTRA_STACK) */
   setobj2s(L, func + 1, p1);  /* 1st argument */
   setobj2s(L, func + 2, p2);  /* 2nd argument */
   setobj2s(L, func + 3, p3);  /* 3rd argument */
@@ -120,7 +120,7 @@ void vmkT_callTMres (vmk_State *L, const TValue *f, const TValue *p1,
                      const TValue *p2, StkId res) {
   ptrdiff_t result = savestack(L, res);
   StkId func = L->top.p;
-  setobj2s(L, func, f);  /* push fn (assume EXTRA_STACK) */
+  setobj2s(L, func, f);  /* push function (assume EXTRA_STACK) */
   setobj2s(L, func + 1, p1);  /* 1st argument */
   setobj2s(L, func + 2, p2);  /* 2nd argument */
   L->top.p += 3;
@@ -242,7 +242,7 @@ void vmkT_adjustvarargs (vmk_State *L, int nfixparams, CallInfo *ci,
   int nextra = actual - nfixparams;  /* number of extra arguments */
   ci->u.l.nextraargs = nextra;
   vmkD_checkstack(L, p->maxstacksize + 1);
-  /* copy fn to the top of the stack */
+  /* copy function to the top of the stack */
   setobjs2s(L, L->top.p++, ci->func.p);
   /* move fixed parameters to the top of the stack */
   for (i = 1; i <= nfixparams; i++) {

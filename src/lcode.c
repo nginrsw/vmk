@@ -31,7 +31,7 @@
 #include "lvm.h"
 
 
-/* Maximum number of registers in a Vmk fn (must fit in 8 bits) */
+/* Maximum number of registers in a Vmk function (must fit in 8 bits) */
 #define MAXREGS		255
 
 
@@ -126,7 +126,7 @@ static Instruction *previousinstruction (FuncState *fs) {
 ** Create a OP_LOADNIL instruction, but try to optimize: if the previous
 ** instruction is also OP_LOADNIL and ranges are compatible, adjust
 ** range of previous instruction instead of emitting a new one. (For
-** instance, 'own a; own b' will generate a single opcode.)
+** instance, 'local a; local b' will generate a single opcode.)
 */
 void vmkK_nil (FuncState *fs, int from, int n) {
   int l = from + n - 1;  /* last register to set nil */
@@ -468,7 +468,7 @@ void vmkK_checkstack (FuncState *fs, int n) {
   if (newstack > fs->f->maxstacksize) {
     if (newstack >= MAXREGS)
       vmkX_syntaxerror(fs->ls,
-        "fn or expression needs too many registers");
+        "function or expression needs too many registers");
     fs->f->maxstacksize = cast_byte(newstack);
   }
 }
@@ -485,7 +485,7 @@ void vmkK_reserveregs (FuncState *fs, int n) {
 
 /*
 ** Free register 'reg', if it is neither a constant index nor
-** a own variable.
+** a local variable.
 )
 */
 static void freereg (FuncState *fs, int reg) {
@@ -538,7 +538,7 @@ static void freeexps (FuncState *fs, expdesc *e1, expdesc *e2) {
 ** as keys (nil cannot be a key, integer keys can collapse with float
 ** keys), the caller must provide a useful 'key' for indexing the cache.
 ** Note that all functions share the same table, so entering or exiting
-** a fn can make some indices wrong.
+** a function can make some indices wrong.
 */
 static int addk (FuncState *fs, TValue *key, TValue *v) {
   TValue val;
@@ -716,11 +716,11 @@ static void const2exp (TValue *v, expdesc *e) {
 
 /*
 ** Fix an expression to return the number of results 'nresults'.
-** 'e' must be a multi-ret expression (fn call or vararg).
+** 'e' must be a multi-ret expression (function call or vararg).
 */
 void vmkK_setreturns (FuncState *fs, expdesc *e, int nresults) {
   Instruction *pc = &getinstruction(fs, e);
-  if (e->k == VCALL)  /* expression is an open fn call? */
+  if (e->k == VCALL)  /* expression is an open function call? */
     SETARG_C(*pc, nresults + 1);
   else {
     vmk_assert(e->k == VVARARG);
@@ -743,7 +743,7 @@ static void str2K (FuncState *fs, expdesc *e) {
 
 /*
 ** Fix an expression to return one result.
-** If expression is not a multi-ret expression (fn call or
+** If expression is not a multi-ret expression (function call or
 ** vararg), it already returns one result, so nothing needs to be done.
 ** Function calls become VNONRELOC expressions (as its result comes
 ** fixed in the base register of the call), while vararg expressions
@@ -752,7 +752,7 @@ static void str2K (FuncState *fs, expdesc *e) {
 ** to be fixed.)
 */
 void vmkK_setoneret (FuncState *fs, expdesc *e) {
-  if (e->k == VCALL) {  /* expression is an open fn call? */
+  if (e->k == VCALL) {  /* expression is an open function call? */
     /* already returns 1 value */
     vmk_assert(GETARG_C(getinstruction(fs, e)) == 2);
     e->k = VNONRELOC;  /* result has fixed position */
@@ -957,12 +957,12 @@ int vmkK_exp2anyreg (FuncState *fs, expdesc *e) {
   if (e->k == VNONRELOC) {  /* expression already has a register? */
     if (!hasjumps(e))  /* no jumps? */
       return e->u.info;  /* result is already in a register */
-    if (e->u.info >= vmkY_nvarstack(fs)) {  /* reg. is not a own? */
+    if (e->u.info >= vmkY_nvarstack(fs)) {  /* reg. is not a local? */
       exp2reg(fs, e, e->u.info);  /* put final result in it */
       return e->u.info;
     }
     /* else expression has jumps and cannot change its register
-       to hold the jump values, because it is a own variable.
+       to hold the jump values, because it is a local variable.
        Go through to the default case. */
   }
   vmkK_exp2nextreg(fs, e);  /* default: use next available register */
@@ -1090,7 +1090,7 @@ void vmkK_self (FuncState *fs, expdesc *e, expdesc *key) {
   freeexp(fs, e);
   e->u.info = fs->freereg;  /* base register for op_self */
   e->k = VNONRELOC;  /* self expression has a fixed register */
-  vmkK_reserveregs(fs, 2);  /* fn and 'self' produced by op_self */
+  vmkK_reserveregs(fs, 2);  /* function and 'self' produced by op_self */
   codeABRK(fs, OP_SELF, e->u.info, ereg, key);
   freeexp(fs, key);
 }
@@ -1528,7 +1528,7 @@ static void codecommutative (FuncState *fs, BinOpr op,
 
 
 /*
-** Code bitwise operations; they are all commutative, so the fn
+** Code bitwise operations; they are all commutative, so the function
 ** tries to put an integer constant as the 2nd operand (a K operand).
 */
 static void codebitwise (FuncState *fs, BinOpr opr,
@@ -1840,7 +1840,7 @@ static int finaltarget (Instruction *code, int i) {
 
 
 /*
-** Do a final pass over the code of a fn, doing small peephole
+** Do a final pass over the code of a function, doing small peephole
 ** optimizations and adjustments.
 */
 void vmkK_finish (FuncState *fs) {

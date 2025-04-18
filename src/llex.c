@@ -3,10 +3,10 @@
 ** Lexical Analyzer
 ** See Copyright Notice in vmk.h
 */
-
 #define llex_c
 #define VMK_CORE
 
+#include <stdio.h>
 #include "lprefix.h"
 
 
@@ -39,9 +39,10 @@
 /* ORDER RESERVED */
 static const char *const vmkX_tokens [] = {
     "and", "break", "do", "else", "elseif",
-    "end", "false", "for", "fn", "goto", "if",
-    "in", "own", "nil", "not", "or", "repeat",
+    "end", "false", "for", "function", "goto", "if",
+    "in", "local", "nil", "not", "or", "repeat",
     "return", "then", "true", "until", "while",
+    "own", "fn",
     "//", "..", "...", "==", ">=", "<=", "~=",
     "<<", ">>", "::", "<eof>",
     "<number>", "<integer>", "<name>", "<string>"
@@ -73,8 +74,8 @@ void vmkX_init (vmk_State *L) {
   vmkC_fix(L, obj2gco(e));  /* never collect this name */
   for (i=0; i<NUM_RESERVED; i++) {
     TString *ts = vmkS_new(L, vmkX_tokens[i]);
+    ts->extra = cast_byte(i+1);
     vmkC_fix(L, obj2gco(ts));  /* reserved words are never collected */
-    ts->extra = cast_byte(i+1);  /* reserved word */
   }
 }
 
@@ -213,7 +214,7 @@ static int check_next2 (LexState *ls, const char *set) {
 
 /* VMK_NUMBER */
 /*
-** This fn is quite liberal in what it accepts, as 'vmkO_str2num'
+** This function is quite liberal in what it accepts, as 'vmkO_str2num'
 ** will reject ill-formed numerals. Roughly, it accepts the following
 ** pattern:
 **

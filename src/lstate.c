@@ -73,8 +73,8 @@ static unsigned int vmki_makeseed (vmk_State *L) {
   unsigned int h = cast_uint(time(NULL));
   int p = 0;
   addbuff(buff, p, L);  /* heap variable */
-  addbuff(buff, p, &h);  /* own variable */
-  addbuff(buff, p, &vmk_newstate);  /* public fn */
+  addbuff(buff, p, &h);  /* local variable */
+  addbuff(buff, p, &vmk_newstate);  /* public function */
   vmk_assert(p == sizeof(buff));
   return vmkS_hash(buff, p, h);
 }
@@ -193,7 +193,7 @@ static void stack_init (vmk_State *L1, vmk_State *L) {
   ci->func.p = L1->top.p;
   ci->u.c.k = NULL;
   ci->nresults = 0;
-  setnilvalue(s2v(L1->top.p));  /* 'fn' entry for this 'ci' */
+  setnilvalue(s2v(L1->top.p));  /* 'function' entry for this 'ci' */
   L1->top.p++;
   ci->top.p = L1->top.p + VMK_MINSTACK;
   L1->ci = ci;
@@ -322,7 +322,7 @@ void vmkE_freethread (vmk_State *L, vmk_State *L1) {
 
 int vmkE_resetthread (vmk_State *L, int status) {
   CallInfo *ci = L->ci = &L->base_ci;  /* unwind CallInfo list */
-  setnilvalue(s2v(L->stack.p));  /* 'fn' entry for basic 'ci' */
+  setnilvalue(s2v(L->stack.p));  /* 'function' entry for basic 'ci' */
   ci->func.p = L->stack.p;
   ci->callstatus = CIST_C;
   if (status == VMK_YIELD)

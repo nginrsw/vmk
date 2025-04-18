@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>body {transition: opacity ease-in 0.2s; } 
+body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relative; } 
+</style>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script type="text/javascript" async="" src="./Learn Vmk in 15 Minutes_files/ga.js"></script><script async="" src="./Learn Vmk in 15 Minutes_files/js"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  fn gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-WFTYSG93P6');
+</script>
+
+<title>Learn VMK in 15 Minutes</title>
+<meta name="format-detection" content="telephone=no">
+<link href="./Learn Vmk in 15 Minutes_files/css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="./Learn Vmk in 15 Minutes_files/default.css">
+<script src="./Learn Vmk in 15 Minutes_files/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-8366930-1']);
+  _gaq.push(['_trackPageview']);
+
+  (fn() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<style>
+  html {
+    //background-color: #D8D8E0;
+  }
+  body {
+    background-color: white;
+    width: 752px;
+    margin: 30px auto 50px auto;
+    font-size: 17pt;
+    font-family: 'PT Serif';
+    padding: 30px;
+    border-radius: 10px;
+  }
+  h1 {
+    margin-top: -7px;
+    margin-bottom: 0;
+  }
+  i {
+    margin-bottom: 1.5em;
+    display: block;
+  }
+  pre {
+    margin: 0;
+  }
+  .float-holder:before,
+  .float-holder:after {
+    content: "";
+    display: table;
+  }
+  .float-holder:after {
+    clear: both;
+  }
+</style>
+</head>
+<body>
+
+<h1> Learn VMK in 15 Minutes </h1>
+<!-- <i>more or less</i> -->
+
+<hr>
+
+<!--
+<p style="font-size:70%">
+  San Francisco:
+  <a href="http://unboxresearch.com/tf101">TensorFlow 1-day workshop on 10/6/18</a>.
+  Register by Friday 9/28 for discount tickets.
+</p>
+-->
+
+<!--
+<p style="font-size:70%">
+  <em>Know JavaScript?
+  <a href="https://www.oreilly.com/learning/learn-vmk-from-javascript-part-1-an-introduction-to-vmk">
+  Learn Vmk from Javascript</a>.</em>
+</p>
+-->
+
+<!--
+<p style="font-size:70%">
+  <em>For a more in-depth Vmk tutorial, watch
+  <a href="https://www.youtube.com/watch?v=S4eNl1rA1Ns">this video</a>
+  or check out <a href="http://tylerneylon.github.io/video-scripts/">a
+  transcript of the video</a>.</em>
+</p>
+-->
+
+<pre><code class="vmk"><span class="comment">-- Two dashes start a one-line comment.</span>
+
+<span class="comment">--[[
+     Adding two ['s and ]'s makes it a
+     multi-line comment.
+--]]</span>
+
+<span class="comment">----------------------------------------------------</span>
+<span class="comment">-- 1. Variables and flow control.</span>
+<span class="comment">----------------------------------------------------</span>
+
+num = <span class="number">42</span>  <span class="comment">-- All numbers are doubles.</span>
+<span class="comment">-- Don't freak out, 64-bit doubles have 52 bits for</span>
+<span class="comment">-- storing exact int values; machine precision is</span>
+<span class="comment">-- not a problem for ints that need &lt; 52 bits.</span>
+
+s = <span class="string">'walternate'</span>  <span class="comment">-- Immutable strings like Python.</span>
+t = <span class="string">"double-quotes are also fine"</span>
+u = <span class="string">[[ Double brackets
+       start and end
+       multi-line strings.]]</span>
+t = <span class="keyword">nil</span>  <span class="comment">-- Undefines t; vmk has garbage collection.</span>
+
+<span class="comment">-- Blocks are denoted with keywords like do/end:</span>
+<span class="keyword">while</span> num &lt; <span class="number">50</span> <span class="keyword">do</span>
+  num = num + <span class="number">1</span>  <span class="comment">-- No ++ or += type operators.</span>
+<span class="keyword">end</span>
+
+<span class="comment">-- If clauses:</span>
+<span class="keyword">if</span> num &gt; <span class="number">40</span> <span class="keyword">then</span>
+  <span class="built_in">print</span>(<span class="string">'over 40'</span>)
+<span class="keyword">elseif</span> s ~= <span class="string">'walternate'</span> <span class="keyword">then</span>  <span class="comment">-- ~= is not equals.</span>
+  <span class="comment">-- Equality check is == like Python; ok for strs.</span>
+  <span class="built_in">io</span>.write(<span class="string">'not over 40\n'</span>)  <span class="comment">-- Defaults to stdout.</span>
+<span class="keyword">else</span>
+  <span class="comment">-- Variables are global by default.</span>
+  thisIsGlobal = <span class="number">5</span>  <span class="comment">-- Camel case is common.</span>
+
+  <span class="comment">-- How to make a variable local:</span>
+  <span class="keyword">own</span> line = <span class="built_in">io</span>.read()  <span class="comment">-- Reads next stdin line.</span>
+
+  <span class="comment">-- String concatenation uses the .. operator:</span>
+  <span class="built_in">print</span>(<span class="string">'Winter is coming, '</span> .. line)
+<span class="keyword">end</span>
+
+<span class="comment">-- Undefined variables return nil.</span>
+<span class="comment">-- This is not an error:</span>
+foo = anUnknownVariable  <span class="comment">-- Now foo = nil.</span>
+
+aBoolValue = <span class="keyword">false</span>
+
+<span class="comment">-- Only nil and false are falsy; 0 and '' are true!</span>
+<span class="keyword">if</span> <span class="keyword">not</span> aBoolValue <span class="keyword">then</span> <span class="built_in">print</span>(<span class="string">'twas false'</span>) <span class="keyword">end</span>
+
+<span class="comment">-- 'or' and 'and' are short-circuited.</span>
+<span class="comment">-- This is similar to the a?b:c operator in C/js:</span>
+ans = aBoolValue <span class="keyword">and</span> <span class="string">'yes'</span> <span class="keyword">or</span> <span class="string">'no'</span>  <span class="comment">--&gt; 'no'</span>
+
+karlSum = <span class="number">0</span>
+<span class="keyword">for</span> i = <span class="number">1</span>, <span class="number">100</span> <span class="keyword">do</span>  <span class="comment">-- The range includes both ends.</span>
+  karlSum = karlSum + i
+<span class="keyword">end</span>
+
+<span class="comment">-- Use "100, 1, -1" as the range to count down:</span>
+fredSum = <span class="number">0</span>
+<span class="keyword">for</span> j = <span class="number">100</span>, <span class="number">1</span>, -<span class="number">1</span> <span class="keyword">do</span> fredSum = fredSum + j <span class="keyword">end</span>
+
+<span class="comment">-- In general, the range is begin, end[, step].</span>
+
+<span class="comment">-- Another loop construct:</span>
+<span class="keyword">repeat</span>
+  <span class="built_in">print</span>(<span class="string">'the way of the future'</span>)
+  num = num - <span class="number">1</span>
+<span class="keyword">until</span> num == <span class="number">0</span>
+
+
+<span class="comment">----------------------------------------------------</span>
+<span class="comment">-- 2. Functions.</span>
+<span class="comment">----------------------------------------------------</span>
+
+<span class="fn"><span class="keyword">fn</span> <span class="title">fib</span><span class="params">(n)</span></span>
+  <span class="keyword">if</span> n &lt; <span class="number">2</span> <span class="keyword">then</span> <span class="keyword">return</span> <span class="number">1</span> <span class="keyword">end</span>
+  <span class="keyword">return</span> fib(n - <span class="number">2</span>) + fib(n - <span class="number">1</span>)
+<span class="keyword">end</span>
+
+<span class="comment">-- Closures and anonymous functions are ok:</span>
+<span class="fn"><span class="keyword">fn</span> <span class="title">adder</span><span class="params">(x)</span></span>
+  <span class="comment">-- The returned fn is created when adder is</span>
+  <span class="comment">-- called, and remembers the value of x:</span>
+  <span class="keyword">return</span> <span class="fn"><span class="keyword">fn</span> <span class="params">(y)</span></span> <span class="keyword">return</span> x + y <span class="keyword">end</span>
+<span class="keyword">end</span>
+a1 = adder(<span class="number">9</span>)
+a2 = adder(<span class="number">36</span>)
+<span class="built_in">print</span>(a1(<span class="number">16</span>))  <span class="comment">--&gt; 25</span>
+<span class="built_in">print</span>(a2(<span class="number">64</span>))  <span class="comment">--&gt; 100</span>
+
+<span class="comment">-- Returns, func calls, and assignments all work</span>
+<span class="comment">-- with lists that may be mismatched in length.</span>
+<span class="comment">-- Unmatched receivers are nil;</span>
+<span class="comment">-- unmatched senders are discarded.</span>
+
+x, y, z = <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>
+<span class="comment">-- Now x = 1, y = 2, z = 3, and 4 is thrown away.</span>
+
+<span class="fn"><span class="keyword">fn</span> <span class="title">bar</span><span class="params">(a, b, c)</span></span>
+  <span class="built_in">print</span>(a, b, c)
+  <span class="keyword">return</span> <span class="number">4</span>, <span class="number">8</span>, <span class="number">15</span>, <span class="number">16</span>, <span class="number">23</span>, <span class="number">42</span>
+<span class="keyword">end</span>
+
+x, y = bar(<span class="string">'zaphod'</span>)  <span class="comment">--&gt; prints "zaphod  nil nil"</span>
+<span class="comment">-- Now x = 4, y = 8, values 15..42 are discarded.</span>
+
+<span class="comment">-- Functions are first-class, may be local/global.</span>
+<span class="comment">-- These are the same:</span>
+<span class="fn"><span class="keyword">fn</span> <span class="title">f</span><span class="params">(x)</span></span> <span class="keyword">return</span> x * x <span class="keyword">end</span>
+f = <span class="fn"><span class="keyword">fn</span> <span class="params">(x)</span></span> <span class="keyword">return</span> x * x <span class="keyword">end</span>
+
+<span class="comment">-- And so are these:</span>
+<span class="keyword">own</span> <span class="fn"><span class="keyword">fn</span> <span class="title">g</span><span class="params">(x)</span></span> <span class="keyword">return</span> <span class="built_in">math</span>.sin(x) <span class="keyword">end</span>
+<span class="keyword">own</span> g; g  = <span class="fn"><span class="keyword">fn</span> <span class="params">(x)</span></span> <span class="keyword">return</span> <span class="built_in">math</span>.sin(x) <span class="keyword">end</span>
+<span class="comment">-- the 'own g' decl makes g-self-references ok.</span>
+
+<span class="comment">-- Trig funcs work in radians, by the way.</span>
+
+<span class="comment">-- Calls with one string param don't need parens:</span>
+<span class="built_in">print</span> <span class="string">'hello'</span>  <span class="comment">-- Works fine.</span>
+
+
+<span class="comment">----------------------------------------------------</span>
+<span class="comment">-- 3. Tables.</span>
+<span class="comment">----------------------------------------------------</span>
+
+<span class="comment">-- Tables = vmk's only compound data structure;</span>
+<span class="comment">--          they are associative arrays.</span>
+<span class="comment">-- Similar to php arrays or js objects, they are</span>
+<span class="comment">-- hash-lookup dicts that can also be used as lists.</span>
+
+<span class="comment">-- Using tables as dictionaries / maps:</span>
+
+<span class="comment">-- Dict literals have string keys by default:</span>
+t = {key1 = <span class="string">'value1'</span>, key2 = <span class="keyword">false</span>}
+
+<span class="comment">-- String keys can use js-like dot notation:</span>
+<span class="built_in">print</span>(t.key1)  <span class="comment">-- Prints 'value1'.</span>
+t.newKey = {}  <span class="comment">-- Adds a new key/value pair.</span>
+t.key2 = <span class="keyword">nil</span>   <span class="comment">-- Removes key2 from the table.</span>
+
+<span class="comment">-- Literal notation for any (non-nil) value as key:</span>
+u = {[<span class="string">'@!#'</span>] = <span class="string">'qbert'</span>, [{}] = <span class="number">1729</span>, [<span class="number">6.28</span>] = <span class="string">'tau'</span>}
+<span class="built_in">print</span>(u[<span class="number">6.28</span>])  <span class="comment">-- prints "tau"</span>
+
+<span class="comment">-- Key matching is basically by value for numbers</span>
+<span class="comment">-- and strings, but by identity for tables.</span>
+a = u[<span class="string">'@!#'</span>]  <span class="comment">-- Now a = 'qbert'.</span>
+b = u[{}]     <span class="comment">-- We might expect 1729, but it's nil:</span>
+<span class="comment">-- b = nil since the lookup fails. It fails</span>
+<span class="comment">-- because the key we used is not the same object</span>
+<span class="comment">-- as the one used to store the original value. So</span>
+<span class="comment">-- strings &amp; numbers are more portable keys.</span>
+
+<span class="comment">-- A one-table-param fn call needs no parens:</span>
+<span class="fn"><span class="keyword">fn</span> <span class="title">h</span><span class="params">(x)</span></span> <span class="built_in">print</span>(x.key1) <span class="keyword">end</span>
+h{key1 = <span class="string">'Sonmi~451'</span>}  <span class="comment">-- Prints 'Sonmi~451'.</span>
+
+<span class="keyword">for</span> key, val <span class="keyword">in</span> <span class="built_in">pairs</span>(u) <span class="keyword">do</span>  <span class="comment">-- Table iteration.</span>
+  <span class="built_in">print</span>(key, val)
+<span class="keyword">end</span>
+
+<span class="comment">-- _G is a special table of all globals.</span>
+<span class="built_in">print</span>(<span class="built_in">_G</span>[<span class="string">'_G'</span>] == <span class="built_in">_G</span>)  <span class="comment">-- Prints 'true'.</span>
+
+<span class="comment">-- Using tables as lists / arrays:</span>
+
+<span class="comment">-- List literals implicitly set up int keys:</span>
+v = {<span class="string">'value1'</span>, <span class="string">'value2'</span>, <span class="number">1.21</span>, <span class="string">'gigawatts'</span>}
+<span class="keyword">for</span> i = <span class="number">1</span>, #v <span class="keyword">do</span>  <span class="comment">-- #v is the size of v for lists.</span>
+  <span class="built_in">print</span>(v[i])  <span class="comment">-- Indices start at 1 !! SO CRAZY!</span>
+<span class="keyword">end</span>
+<span class="comment">-- A 'list' is not a real type. v is just a table</span>
+<span class="comment">-- with consecutive integer keys, treated as a list.</span>
+
+<span class="comment">----------------------------------------------------</span>
+<span class="comment">-- 3.1 Metatables and metamethods.</span>
+<span class="comment">----------------------------------------------------</span>
+
+<span class="comment">-- A table can have a metatable that gives the table</span>
+<span class="comment">-- operator-overloadish behavior. Later we'll see</span>
+<span class="comment">-- how metatables support js-prototypey behavior.</span>
+
+f1 = {a = <span class="number">1</span>, b = <span class="number">2</span>}  <span class="comment">-- Represents the fraction a/b.</span>
+f2 = {a = <span class="number">2</span>, b = <span class="number">3</span>}
+
+<span class="comment">-- This would fail:</span>
+<span class="comment">-- s = f1 + f2</span>
+
+metafraction = {}
+<span class="fn"><span class="keyword">fn</span> <span class="title">metafraction.__add</span><span class="params">(f1, f2)</span></span>
+  sum = {}
+  sum.b = f1.b * f2.b
+  sum.a = f1.a * f2.b + f2.a * f1.b
+  <span class="keyword">return</span> sum
+<span class="keyword">end</span>
+
+<span class="built_in">setmetatable</span>(f1, metafraction)
+<span class="built_in">setmetatable</span>(f2, metafraction)
+
+s = f1 + f2  <span class="comment">-- call __add(f1, f2) on f1's metatable</span>
+
+<span class="comment">-- f1, f2 have no key for their metatable, unlike</span>
+<span class="comment">-- prototypes in js, so you must retrieve it as in</span>
+<span class="comment">-- getmetatable(f1). The metatable is a normal table</span>
+<span class="comment">-- with keys that vmk knows about, like __add.</span>
+
+<span class="comment">-- But the next line fails since s has no metatable:</span>
+<span class="comment">-- t = s + s</span>
+<span class="comment">-- Class-like patterns given below would fix this.</span>
+
+<span class="comment">-- An __index on a metatable overloads dot lookups:</span>
+defaultFavs = {animal = <span class="string">'gru'</span>, food = <span class="string">'donuts'</span>}
+myFavs = {food = <span class="string">'pizza'</span>}
+<span class="built_in">setmetatable</span>(myFavs, {__index = defaultFavs})
+eatenBy = myFavs.animal  <span class="comment">-- works! thanks, metatable</span>
+
+<span class="comment">-- Direct table lookups that fail will retry using</span>
+<span class="comment">-- the metatable's __index value, and this recurses.</span>
+
+<span class="comment">-- An __index value can also be a fn(tbl, key)</span>
+<span class="comment">-- for more customized lookups.</span>
+
+<span class="comment">-- Values of __index,add, .. are called metamethods.</span>
+<span class="comment">-- Full list. Here a is a table with the metamethod.</span>
+
+<span class="comment">-- __add(a, b)                     for a + b</span>
+<span class="comment">-- __sub(a, b)                     for a - b</span>
+<span class="comment">-- __mul(a, b)                     for a * b</span>
+<span class="comment">-- __div(a, b)                     for a / b</span>
+<span class="comment">-- __mod(a, b)                     for a % b</span>
+<span class="comment">-- __pow(a, b)                     for a ^ b</span>
+<span class="comment">-- __unm(a)                        for -a</span>
+<span class="comment">-- __concat(a, b)                  for a .. b</span>
+<span class="comment">-- __len(a)                        for #a</span>
+<span class="comment">-- __eq(a, b)                      for a == b</span>
+<span class="comment">-- __lt(a, b)                      for a &lt; b</span>
+<span class="comment">-- __le(a, b)                      for a &lt;= b</span>
+<span class="comment">-- __index(a, b)  &lt;fn or a table&gt;  for a.b</span>
+<span class="comment">-- __newindex(a, b, c)             for a.b = c</span>
+<span class="comment">-- __call(a, ...)                  for a(...)</span>
+
+<span class="comment">----------------------------------------------------</span>
+<span class="comment">-- 3.2 Class-like tables and inheritance.</span>
+<span class="comment">----------------------------------------------------</span>
+
+<span class="comment">-- Classes aren't built in; there are different ways</span>
+<span class="comment">-- to make them using tables and metatables.</span>
+
+<span class="comment">-- Explanation for this example is below it.</span>
+
+Dog = {}                                   <span class="comment">-- 1.</span>
+
+<span class="fn"><span class="keyword">fn</span> <span class="title">Dog:new</span><span class="params">()</span></span>                         <span class="comment">-- 2.</span>
+  newObj = {sound = <span class="string">'woof'</span>}                <span class="comment">-- 3.</span>
+  self.__index = self                      <span class="comment">-- 4.</span>
+  <span class="keyword">return</span> <span class="built_in">setmetatable</span>(newObj, self)        <span class="comment">-- 5.</span>
+<span class="keyword">end</span>
+
+<span class="fn"><span class="keyword">fn</span> <span class="title">Dog:makeSound</span><span class="params">()</span></span>                   <span class="comment">-- 6.</span>
+  <span class="built_in">print</span>(<span class="string">'I say '</span> .. self.sound)
+<span class="keyword">end</span>
+
+mrDog = Dog:new()                          <span class="comment">-- 7.</span>
+mrDog:makeSound()  <span class="comment">-- 'I say woof'         -- 8.</span>
+
+<span class="comment">-- 1. Dog acts like a class; it's really a table.</span>
+<span class="comment">-- 2. fn tablename:fn(...) is the same as</span>
+<span class="comment">--    fn tablename.fn(self, ...)</span>
+<span class="comment">--    The : just adds a first arg called self.</span>
+<span class="comment">--    Read 7 &amp; 8 below for how self gets its value.</span>
+<span class="comment">-- 3. newObj will be an instance of class Dog.</span>
+<span class="comment">-- 4. self = the class being instantiated. Often</span>
+<span class="comment">--    self = Dog, but inheritance can change it.</span>
+<span class="comment">--    newObj gets self's functions when we set both</span>
+<span class="comment">--    newObj's metatable and self's __index to self.</span>
+<span class="comment">-- 5. Reminder: setmetatable returns its first arg.</span>
+<span class="comment">-- 6. The : works as in 2, but this time we expect</span>
+<span class="comment">--    self to be an instance instead of a class.</span>
+<span class="comment">-- 7. Same as Dog.new(Dog), so self = Dog in new().</span>
+<span class="comment">-- 8. Same as mrDog.makeSound(mrDog); self = mrDog.</span>
+
+<span class="comment">----------------------------------------------------</span>
+
+<span class="comment">-- Inheritance example:</span>
+
+LoudDog = Dog:new()                           <span class="comment">-- 1.</span>
+
+<span class="fn"><span class="keyword">fn</span> <span class="title">LoudDog:makeSound</span><span class="params">()</span></span>
+  s = self.sound .. <span class="string">' '</span>                       <span class="comment">-- 2.</span>
+  <span class="built_in">print</span>(s .. s .. s)
+<span class="keyword">end</span>
+
+seymour = LoudDog:new()                       <span class="comment">-- 3.</span>
+seymour:makeSound()  <span class="comment">-- 'woof woof woof'      -- 4.</span>
+
+<span class="comment">-- 1. LoudDog gets Dog's methods and variables.</span>
+<span class="comment">-- 2. self has a 'sound' key from new(), see 3.</span>
+<span class="comment">-- 3. Same as LoudDog.new(LoudDog), and converted to</span>
+<span class="comment">--    Dog.new(LoudDog) as LoudDog has no 'new' key,</span>
+<span class="comment">--    but does have __index = Dog on its metatable.</span>
+<span class="comment">--    Result: seymour's metatable is LoudDog, and</span>
+<span class="comment">--    LoudDog.__index = LoudDog. So seymour.key will</span>
+<span class="comment">--    = seymour.key, LoudDog.key, Dog.key, whichever</span>
+<span class="comment">--    table is the first with the given key.</span>
+<span class="comment">-- 4. The 'makeSound' key is found in LoudDog; this</span>
+<span class="comment">--    is the same as LoudDog.makeSound(seymour).</span>
+
+<span class="comment">-- If needed, a subclass's new() is like the base's:</span>
+<span class="fn"><span class="keyword">fn</span> <span class="title">LoudDog:new</span><span class="params">()</span></span>
+  newObj = {}
+  <span class="comment">-- set up newObj</span>
+  self.__index = self
+  <span class="keyword">return</span> <span class="built_in">setmetatable</span>(newObj, self)
+<span class="keyword">end</span>
+
+<span class="comment">----------------------------------------------------</span>
+<span class="comment">-- 4. Modules.</span>
+<span class="comment">----------------------------------------------------</span>
+
+
+<span class="comment">--[[ I'm commenting out this section so the rest of
+--   this script remains runnable.
+</span></code></pre><code></code><pre><code class="vmk"><span class="comment">-- Suppose the file mod.vmk looks like this:</span>
+<span class="keyword">own</span> M = {}
+
+<span class="keyword">own</span> <span class="fn"><span class="keyword">fn</span> <span class="title">sayMyName</span><span class="params">()</span></span>
+  <span class="built_in">print</span>(<span class="string">'Hrunkner'</span>)
+<span class="keyword">end</span>
+
+<span class="fn"><span class="keyword">fn</span> <span class="title">M.sayHello</span><span class="params">()</span></span>
+  <span class="built_in">print</span>(<span class="string">'Why hello there'</span>)
+  sayMyName()
+<span class="keyword">end</span>
+
+<span class="keyword">return</span> M
+
+<span class="comment">-- Another file can use mod.vmk's functionality:</span>
+<span class="keyword">own</span> mod = <span class="built_in">require</span>(<span class="string">'mod'</span>)  <span class="comment">-- Run the file mod.vmk.</span>
+
+<span class="comment">-- require is the standard way to include modules.</span>
+<span class="comment">-- require acts like:     (if not cached; see below)</span>
+<span class="keyword">own</span> mod = (<span class="fn"><span class="keyword">fn</span> <span class="params">()</span></span>
+  &lt;contents of mod.vmk&gt;
+<span class="keyword">end</span>)()
+<span class="comment">-- It's like mod.vmk is a fn body, so that</span>
+<span class="comment">-- locals inside mod.vmk are invisible outside it.</span>
+
+<span class="comment">-- This works because mod here = M in mod.vmk:</span>
+mod.sayHello()  <span class="comment">-- Says hello to Hrunkner.</span>
+
+<span class="comment">-- This is wrong; sayMyName only exists in mod.vmk:</span>
+mod.sayMyName()  <span class="comment">-- error</span>
+
+<span class="comment">-- require's return values are cached so a file is</span>
+<span class="comment">-- run at most once, even when require'd many times.</span>
+
+<span class="comment">-- Suppose mod2.vmk contains "print('Hi!')".</span>
+<span class="keyword">own</span> a = <span class="built_in">require</span>(<span class="string">'mod2'</span>)  <span class="comment">-- Prints Hi!</span>
+<span class="keyword">own</span> b = <span class="built_in">require</span>(<span class="string">'mod2'</span>)  <span class="comment">-- Doesn't print; a=b.</span>
+
+<span class="comment">-- dofile is like require without caching:</span>
+<span class="built_in">dofile</span>(<span class="string">'mod2.vmk'</span>)  <span class="comment">--&gt; Hi!</span>
+<span class="built_in">dofile</span>(<span class="string">'mod2.vmk'</span>)  <span class="comment">--&gt; Hi! (runs it again)</span>
+
+<span class="comment">-- loadfile loads a vmk file but doesn't run it yet.</span>
+f = <span class="built_in">loadfile</span>(<span class="string">'mod2.vmk'</span>)  <span class="comment">-- Call f() to run it.</span>
+
+<span class="comment">-- loadstring is loadfile for strings.</span>
+g = <span class="built_in">loadstring</span>(<span class="string">'print(343)'</span>)  <span class="comment">-- Returns a fn.</span>
+g()  <span class="comment">-- Prints out 343; nothing printed before now.</span>
+
+<span class="comment">--]]</span>
+
+<span class="comment">----------------------------------------------------</span>
+<span class="comment">-- 5. References.</span>
+<span class="comment">----------------------------------------------------</span>
+
+<span class="comment">--[[
+
+I was excited to learn vmk so I could make games
+with the <a href="https://love2d.org/">Löve 2D game engine</a>. That's the why.
+
+I started with <a href="https://nova-fusion.com/2012/08/27/vmk-for-programmers-part-1/">BlackBulletIV's VMK for programmers</a>.
+Next I read the official <a href="https://codeberg.org/nginrsw/vmk/doc/manual.html">Programming in VMK</a> manual.
+That's the how.
+
+The main topics not covered are standard libraries:
+ * <a href="http://vmk-users.org/wiki/StringLibraryTutorial">string library</a>
+ * <a href="http://vmk-users.org/wiki/TableLibraryTutorial">table library</a>
+ * <a href="http://vmk-users.org/wiki/MathLibraryTutorial">math library</a>
+ * <a href="http://vmk-users.org/wiki/IoLibraryTutorial">io library</a>
+ * <a href="http://vmk-users.org/wiki/OsLibraryTutorial">os library</a>
+
+Have fun with VMK!
+
+--]]</span>
+
+</code></pre>
+
+
+<hr>
+
+<span style="float:right;font-size:80%;font-style:italic;color:gray;text-align:right">
+  <a href="https://tylerneylon.com/" style="color:gray;text-decoration:none">Tyler Neylon</a><br>
+  336.2013
+</span>
+
+<veepn-lock-screen><template shadowrootmode="open"><style>html{box-sizing:border-box;text-size-adjust:100%;word-break:normal;-moz-tab-size:4;tab-size:4}*,:before,:after{background-repeat:no-repeat;box-sizing:border-box}:before,:after{text-decoration:inherit;vertical-align:inherit}*{padding:0;margin:0}hr{overflow:visible;height:0;color:inherit;border:0;border-top:1px solid}details,main{display:block}summary{display:list-item}small{font-size:80%}[hidden]{display:none!important}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}a{background-color:transparent}a:active,a:hover{outline-width:0}code,kbd,pre,samp{font-family:monospace}pre{font-size:1em}b,strong{font-weight:bolder}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{border-color:inherit;text-indent:0}iframe{border-style:none}input{border-radius:0}[type=number]::-webkit-inner-spin-button,[type=number]::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;-moz-appearance:textfield;appearance:textfield;outline-offset:-2px}[type=search]::-webkit-search-decoration{-webkit-appearance:none;-moz-appearance:none;appearance:none}textarea{overflow:auto;resize:vertical}button,input,optgroup,select,textarea{font:inherit;color:inherit}optgroup{font-weight:700}button{overflow:visible}button,select{text-transform:none}button,[type=button],[type=reset],[type=submit],[role=button]{cursor:pointer}button::-moz-focus-inner,[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner{border-style:none;padding:0}button,html [type=button],[type=reset],[type=submit]{-webkit-appearance:button;-moz-appearance:button;appearance:button}button,input,select,textarea{background-color:transparent;border-style:none}button:-moz-focusring,[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner{outline:1px dotted ButtonText}select{-webkit-appearance:none;-moz-appearance:none;appearance:none}a:focus,button:focus,input:focus,select:focus,textarea:focus{outline-width:0}select::-ms-expand{display:none}select::-ms-value{color:currentcolor}legend{border:0;color:inherit;display:table;white-space:normal;max-width:100%}::-webkit-file-upload-button{-webkit-appearance:button;-moz-appearance:button;appearance:button;color:inherit;font:inherit}[disabled]{cursor:default}img{border-style:none}progress{vertical-align:baseline}[aria-busy=true]{cursor:progress}[aria-controls]{cursor:pointer}[aria-disabled=true]{cursor:default}ul,ol{list-style-type:none}figure{margin:0}.lock-screen{font-family:FigtreeVF,sans-serif;letter-spacing:normal;position:fixed;z-index:2147483638;top:0;right:0;bottom:0;left:0;padding:32px 40px;color:#222e3a;background-color:#fdfdfd;display:flex;flex-direction:column;row-gap:12px;overflow:auto;background-image:radial-gradient(circle at 0% 0%,#e6fffdcc,#e6fffd00 50%),radial-gradient(circle at 100% 0%,#ebfffecc,#ebfffe00 50%),radial-gradient(circle at 100% 100%,#f0f5ffcc,#f0f5ff00 50%),radial-gradient(circle at 0% 100%,#f2f2ffcc,#f2f2ff00 50%),radial-gradient(circle at 50% 50%,#fff,#fffc,#f5f5ff66,#f0f0ff33,#f0f0ff00),linear-gradient(to bottom right,#e6fffd,#f2f2ff);background-size:100% 100%;background-repeat:no-repeat}.lock-screen__header{display:flex;align-items:center;justify-content:space-between}.lock-screen__logo{display:inline-flex;align-items:center;column-gap:12px;font-size:18px;font-weight:600}.lock-screen__close{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background-color:#222e3a1a}.lock-screen__main{flex-grow:1;align-content:center}.lock-screen__container{max-width:1120px;margin-inline:auto;display:flex;align-items:center;gap:24px}@media (width < 972px){.lock-screen__container{flex-direction:column}}.lock-screen__timer{display:flex;align-items:center;justify-content:center;width:100%}.lock-screen__content{width:100%}.lock-screen__title{font-size:48px;font-weight:700;line-height:56px;margin-bottom:16px}.lock-screen__description{font-size:18px;line-height:32px;margin-bottom:24px}.lock-screen__actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}.lock-screen__action{height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;text-align:center;padding:8px 24px}.upgrade-btn{color:#fff;background:linear-gradient(180deg,#20df9e,#13cf8f)}.skip-btn{color:#3066ff;border-width:1px;border-style:solid;border-color:#3066ff;position:relative}.skip-btn__tooltip{font-size:14px;line-height:24px;font-weight:400;position:absolute;z-index:1;left:50%;top:calc(100% + 18px);padding:8px 12px;color:#fff;border:1px solid #4a5764;background-color:#222e3a;border-radius:8px;width:max-content;pointer-events:none;animation:slide-in .6s ease-in-out forwards}@keyframes slide-in{0%{opacity:0;transform:translate(-50%,-100%)}to{opacity:1;transform:translate(-50%)}}.skip-btn__tooltip:after{content:"";display:block;position:absolute;z-index:1;top:-8px;left:50%;width:0;height:0;border-style:solid;border-width:0 8px 8px;border-color:transparent transparent #222e3a;transform:translate(-6px)}.skip-btn__icon{display:none}.skip-btn:disabled{cursor:not-allowed}.skip-btn:disabled .skip-btn__tooltip,.skip-btn:disabled .skip-btn__text{display:none}.skip-btn:disabled .skip-btn__icon{display:initial;animation:tick-tock .8s steps(8,end) infinite}@keyframes tick-tock{to{transform:rotate(360deg)}}.timer{position:relative;max-width:422px;width:100%;aspect-ratio:1/1;border-radius:50%;background-color:#fff;box-shadow:0 0 40px #2b374114;display:flex;align-items:center;justify-content:center;pointer-events:none;-webkit-user-select:none;user-select:none}.timer__circle-backward{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:0;max-width:100%;height:auto;opacity:.4}.timer__circle-forward{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(45deg);z-index:1;max-width:100%;height:auto;animation:sector 5s linear forwards}.timer__fire-icon{position:absolute;top:22%;left:50%;transform:translate(-50%);z-index:2}.timer__text{font-size:clamp(18px,10vw,88px);letter-spacing:-1px;text-align:center;font-variant-numeric:tabular-nums;position:relative;z-index:3}.timer--finished .timer__text{color:#98a0a9}.timer--finished .timer__circle-forward{display:none}@keyframes sector{0%{clip-path:polygon(50% 50%,0% 2%,100% 0%,100% 100%,0% 100%,0% 2%)}25%{clip-path:polygon(50% 50%,0% 2%,100% 0%,100% 100%,0% 100%,0% 100%)}25.000001%{clip-path:polygon(50% 50%,0% 2%,100% 0%,100% 100%,0% 100%)}50%{clip-path:polygon(50% 50%,0% 2%,100% 0%,100% 100%,100% 100%)}50.000001%{clip-path:polygon(50% 50%,0% 2%,100% 0%,100% 100%)}75%{clip-path:polygon(50% 50%,0% 2%,100% 0%,100% 0%)}75.000001%{clip-path:polygon(50% 50%,0% 2%,100% 0%)}to{clip-path:polygon(50% 50%,0% 2%,0% 0%)}}@media (prefers-color-scheme: dark){.lock-screen{color:#fff;background-image:radial-gradient(circle at 0% 0%,#2f4f4fcc,#2f4f4f00 50%),radial-gradient(circle at 100% 0%,#193042cc,#19304200 50%),radial-gradient(circle at 100% 100%,#1c3041cc,#1c304100 50%),radial-gradient(circle at 0% 100%,#1b263bcc,#1b263b00 50%),radial-gradient(circle at 50% 50%,#141e28,#141e28cc,#1b263b66,#1c304133,#1c304100),linear-gradient(to bottom right,#2f4f4f,#1b263b)}.lock-screen__close{background-color:#ffffff1a}.skip-btn{color:#fff;border-color:#fff}.skip-btn__tooltip{color:#222e3a;border:1px solid #f5f6f7;background-color:#fff}.skip-btn__tooltip:after{border-color:transparent transparent #fff}.timer{background-color:#191b25}.timer__circle-backward{opacity:1}.timer--finished .timer__text{color:#5c6977}}</style></template><style>@font-face{font-family:FigtreeVF;src:url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2 supports variations"),url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2-variations");font-weight:100 1000;font-display:swap}</style></veepn-lock-screen><veepn-guard-alert><template shadowrootmode="open"><style>html{box-sizing:border-box;text-size-adjust:100%;word-break:normal;-moz-tab-size:4;tab-size:4}*,:before,:after{background-repeat:no-repeat;box-sizing:border-box}:before,:after{text-decoration:inherit;vertical-align:inherit}*{padding:0;margin:0}hr{overflow:visible;height:0;color:inherit;border:0;border-top:1px solid}details,main{display:block}summary{display:list-item}small{font-size:80%}[hidden]{display:none}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}a{background-color:transparent}a:active,a:hover{outline-width:0}code,kbd,pre,samp{font-family:monospace}pre{font-size:1em}b,strong{font-weight:bolder}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{border-color:inherit;text-indent:0}iframe{border-style:none}input{border-radius:0}[type=number]::-webkit-inner-spin-button,[type=number]::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;-moz-appearance:textfield;appearance:textfield;outline-offset:-2px}[type=search]::-webkit-search-decoration{-webkit-appearance:none;-moz-appearance:none;appearance:none}textarea{overflow:auto;resize:vertical}button,input,optgroup,select,textarea{font:inherit;color:inherit}optgroup{font-weight:700}button{overflow:visible}button,select{text-transform:none}button,[type=button],[type=reset],[type=submit],[role=button]{cursor:pointer}button::-moz-focus-inner,[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner{border-style:none;padding:0}button,html [type=button],[type=reset],[type=submit]{-webkit-appearance:button;-moz-appearance:button;appearance:button}button,input,select,textarea{background-color:transparent;border-style:none}button:-moz-focusring,[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner{outline:1px dotted ButtonText}select{-webkit-appearance:none;-moz-appearance:none;appearance:none}a:focus,button:focus,input:focus,select:focus,textarea:focus{outline-width:0}select::-ms-expand{display:none}select::-ms-value{color:currentcolor}legend{border:0;color:inherit;display:table;white-space:normal;max-width:100%}::-webkit-file-upload-button{-webkit-appearance:button;-moz-appearance:button;appearance:button;color:inherit;font:inherit}[disabled]{cursor:default}img{border-style:none}progress{vertical-align:baseline}[aria-busy=true]{cursor:progress}[aria-controls]{cursor:pointer}[aria-disabled=true]{cursor:default}ul,ol{list-style-type:none}figure{margin:0}.guard-popup{font-family:FigtreeVF,sans-serif;position:fixed;z-index:2147483638;top:8px;left:24px;overflow:visible;color:#222e3a;background-color:#fff;max-width:416px;width:calc(100% - 48px);border-radius:16px;box-shadow:0 4px 20px #00000040;padding:24px}.guard-popup__header{display:flex;justify-content:space-between;align-items:center;column-gap:16px;margin-bottom:24px}.guard-popup__close{display:flex;align-items:center;justify-content:center;width:24px;height:24px;opacity:.7}.guard-popup__img{line-height:0;margin-bottom:24px}.guard-popup__img img{width:100%;aspect-ratio:368/142;object-fit:cover;border-radius:12px;overflow:hidden}.guard-popup__title{font-size:24px;line-height:32px;margin-bottom:8px}.guard-popup__description{font-size:20px;line-height:28px;font-weight:500;color:#4a5764;margin-bottom:28px}.guard-popup__actions{display:flex;justify-content:flex-end;column-gap:16px}.guard-popup__btn{display:flex;align-items:center;justify-content:center;padding:8px 16px;border-radius:5px;font-size:16px;line-height:24px;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(180deg,#5695fd,#1554ff)}</style></template><style>@font-face{font-family:FigtreeVF;src:url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2 supports variations"),url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2-variations");font-weight:100 1000;font-display:swap}</style></veepn-guard-alert></body></html>

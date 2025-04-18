@@ -29,8 +29,8 @@ VMKMOD_API int (vmkopen_io) (vmk_State *L);
 #define VMK_OSLIBNAME	"os"
 VMKMOD_API int (vmkopen_os) (vmk_State *L);
 
-#define VMK_STRLIBNAME	"str"
-VMKMOD_API int (vmkopen_string) (vmk_State *L);
+#define VMK_STRLIBNAME	"string"
+VMKMOD_API int (vmkopen_string) (vmk_State *L); /* Juga tersedia sebagai 'str' melalui alias */
 
 #define VMK_UTF8LIBNAME	"utf8"
 VMKMOD_API int (vmkopen_utf8) (vmk_State *L);

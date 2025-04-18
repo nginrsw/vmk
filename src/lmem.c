@@ -24,7 +24,7 @@
 
 
 /*
-** About the realloc fn:
+** About the realloc function:
 ** void *frealloc (void *ud, void *ptr, size_t osize, size_t nsize);
 ** ('osize' is the old size, 'nsize' is the new size)
 **
@@ -42,7 +42,7 @@
 
 
 /*
-** Macro to call the allocation fn.
+** Macro to call the allocation function.
 */
 #define callfrealloc(g,block,os,ns)    ((*g->frealloc)(g->ud, block, os, ns))
 
@@ -156,7 +156,7 @@ void vmkM_free_ (vmk_State *L, void *block, size_t osize) {
 
 
 /*
-** In case of allocation fail, this fn will do an emergency
+** In case of allocation fail, this function will do an emergency
 ** collection to free some memory and then try the allocation again.
 */
 static void *tryagain (vmk_State *L, void *block,

@@ -212,7 +212,7 @@ static void dumpHeader (DumpState *D) {
 
 
 /*
-** dump Vmk fn as precompiled chunk
+** dump Vmk function as precompiled chunk
 */
 int vmkU_dump(vmk_State *L, const Proto *f, vmk_Writer w, void *data,
               int strip) {

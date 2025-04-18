@@ -294,7 +294,7 @@ static unsigned int setlimittosize (Table *t) {
 /*
 ** "Generic" get version. (Not that generic: not valid for integers,
 ** which may be in array part, nor for floats with integral values.)
-** See explanation about 'deadok' in fn 'equalkey'.
+** See explanation about 'deadok' in function 'equalkey'.
 */
 static const TValue *getgeneric (Table *t, const TValue *key, int deadok) {
   Node *n = mainpositionTV(t, key);
@@ -544,7 +544,7 @@ static void exchangehashpart (Table *t1, Table *t2) {
 ** error is raised and that is it. Otherwise, it copies the elements from
 ** the shrinking part of the array (if it is shrinking) into the new
 ** hash. Then it reallocates the array part.  If that fails, the table
-** is in its original state; the fn frees the new hash part and then
+** is in its original state; the function frees the new hash part and then
 ** raises the allocation error. Otherwise, it sets the new hash part
 ** into the table, initializes the new part of the array (if any) with
 ** nils and reinserts the elements of the old hash back into the new
@@ -721,7 +721,7 @@ static void vmkH_newkey (vmk_State *L, Table *t, const TValue *key,
 
 
 /*
-** Search fn for integers. If integer is inside 'alimit', get it
+** Search function for integers. If integer is inside 'alimit', get it
 ** directly from the array part. Otherwise, if 'alimit' is not
 ** the real size of the array, the key still can be in the array part.
 ** In this case, do the "Xmilia trick" to check whether 'key-1' is
@@ -768,7 +768,7 @@ const TValue *vmkH_getint (Table *t, vmk_Integer key) {
 
 
 /*
-** search fn for short strings
+** search function for short strings
 */
 const TValue *vmkH_getshortstr (Table *t, TString *key) {
   Node *n = hashstr(t, key);
@@ -798,7 +798,7 @@ const TValue *vmkH_getstr (Table *t, TString *key) {
 
 
 /*
-** main search fn
+** main search function
 */
 const TValue *vmkH_get (Table *t, const TValue *key) {
   switch (ttypetag(key)) {
@@ -820,7 +820,7 @@ const TValue *vmkH_get (Table *t, const TValue *key) {
 /*
 ** Finish a raw "set table" operation, where 'slot' is where the value
 ** should have been (the result of a previous "get table").
-** Beware: when using this fn you probably need to check a GC
+** Beware: when using this function you probably need to check a GC
 ** barrier and invalidate the TM cache.
 */
 void vmkH_finishset (vmk_State *L, Table *t, const TValue *key,
@@ -833,7 +833,7 @@ void vmkH_finishset (vmk_State *L, Table *t, const TValue *key,
 
 
 /*
-** beware: when using this fn you probably need to check a GC
+** beware: when using this function you probably need to check a GC
 ** barrier and invalidate the TM cache.
 */
 void vmkH_set (vmk_State *L, Table *t, const TValue *key, TValue *value) {

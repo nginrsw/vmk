@@ -22,7 +22,7 @@
 
 /*
 ** The hook table at registry[HOOKKEY] maps threads to their current
-** hook fn.
+** hook function.
 */
 static const char *const HOOKKEY = "_HOOKKEY";
 
@@ -86,8 +86,8 @@ static int db_setuservalue (vmk_State *L) {
 
 
 /*
-** Auxiliary fn used by several library functions: check for
-** an optional thread as fn's first argument and set 'arg' with
+** Auxiliary function used by several library functions: check for
+** an optional thread as function's first argument and set 'arg' with
 ** 1 if this argument is present (so that functions can skip it to
 ** access their other arguments)
 */
@@ -98,7 +98,7 @@ static vmk_State *getthread (vmk_State *L, int *arg) {
   }
   else {
     *arg = 0;
-    return L;  /* fn will operate over current thread */
+    return L;  /* function will operate over current thread */
   }
 }
 
@@ -125,7 +125,7 @@ static void settabsb (vmk_State *L, const char *k, int v) {
 
 
 /*
-** In fn 'db_getinfo', the call to 'vmk_getinfo' may push
+** In function 'db_getinfo', the call to 'vmk_getinfo' may push
 ** results on the stack; later it creates the result table to put
 ** these objects. Function 'treatstackoption' puts the result from
 ** 'vmk_getinfo' on top of the result table so that it can call
@@ -142,8 +142,8 @@ static void treatstackoption (vmk_State *L, vmk_State *L1, const char *fname) {
 
 /*
 ** Calls 'vmk_getinfo' and collects all results in a new table.
-** L1 needs stack space for an optional input (fn) plus
-** two optional outputs (fn and line table) from fn
+** L1 needs stack space for an optional input (function) plus
+** two optional outputs (function and line table) from function
 ** 'vmk_getinfo'.
 */
 static int db_getinfo (vmk_State *L) {
@@ -153,9 +153,9 @@ static int db_getinfo (vmk_State *L) {
   const char *options = vmkL_optstring(L, arg+2, "flnSrtu");
   checkstack(L, L1, 3);
   vmkL_argcheck(L, options[0] != '>', arg + 2, "invalid option '>'");
-  if (vmk_isfunction(L, arg + 1)) {  /* info about a fn? */
+  if (vmk_isfunction(L, arg + 1)) {  /* info about a function? */
     options = vmk_pushfstring(L, ">%s", options);  /* add '>' to 'options' */
-    vmk_pushvalue(L, arg + 1);  /* move fn to 'L1' stack */
+    vmk_pushvalue(L, arg + 1);  /* move function to 'L1' stack */
     vmk_xmove(L, L1, 1);
   }
   else {  /* stack level */
@@ -203,10 +203,10 @@ static int db_getinfo (vmk_State *L) {
 static int db_getlocal (vmk_State *L) {
   int arg;
   vmk_State *L1 = getthread(L, &arg);
-  int nvar = (int)vmkL_checkinteger(L, arg + 2);  /* own-variable index */
-  if (vmk_isfunction(L, arg + 1)) {  /* fn argument? */
-    vmk_pushvalue(L, arg + 1);  /* push fn */
-    vmk_pushstring(L, vmk_getlocal(L, NULL, nvar));  /* push own name */
+  int nvar = (int)vmkL_checkinteger(L, arg + 2);  /* local-variable index */
+  if (vmk_isfunction(L, arg + 1)) {  /* function argument? */
+    vmk_pushvalue(L, arg + 1);  /* push function */
+    vmk_pushstring(L, vmk_getlocal(L, NULL, nvar));  /* push local name */
     return 1;  /* return only name (there is no value) */
   }
   else {  /* stack-level argument */
@@ -218,7 +218,7 @@ static int db_getlocal (vmk_State *L) {
     checkstack(L, L1, 1);
     name = vmk_getlocal(L1, &ar, nvar);
     if (name) {
-      vmk_xmove(L1, L, 1);  /* move own value */
+      vmk_xmove(L1, L, 1);  /* move local value */
       vmk_pushstring(L, name);  /* push name */
       vmk_rotate(L, -2, 1);  /* re-order */
       return 2;
@@ -309,15 +309,15 @@ static int db_upvaluejoin (vmk_State *L) {
   int n1, n2;
   checkupval(L, 1, 2, &n1);
   checkupval(L, 3, 4, &n2);
-  vmkL_argcheck(L, !vmk_iscfunction(L, 1), 1, "Vmk fn expected");
-  vmkL_argcheck(L, !vmk_iscfunction(L, 3), 3, "Vmk fn expected");
+  vmkL_argcheck(L, !vmk_iscfunction(L, 1), 1, "Vmk function expected");
+  vmkL_argcheck(L, !vmk_iscfunction(L, 3), 3, "Vmk function expected");
   vmk_upvaluejoin(L, 1, n1, 3, n2);
   return 0;
 }
 
 
 /*
-** Call hook fn registered at hook table for the current
+** Call hook function registered at hook table for the current
 ** thread (if there is one)
 */
 static void hookf (vmk_State *L, vmk_Debug *ar) {
@@ -325,13 +325,13 @@ static void hookf (vmk_State *L, vmk_Debug *ar) {
     {"call", "return", "line", "count", "tail call"};
   vmk_getfield(L, VMK_REGISTRYINDEX, HOOKKEY);
   vmk_pushthread(L);
-  if (vmk_rawget(L, -2) == VMK_TFUNCTION) {  /* is there a hook fn? */
+  if (vmk_rawget(L, -2) == VMK_TFUNCTION) {  /* is there a hook function? */
     vmk_pushstring(L, hooknames[(int)ar->event]);  /* push event name */
     if (ar->currentline >= 0)
       vmk_pushinteger(L, ar->currentline);  /* push current line */
     else vmk_pushnil(L);
     vmk_assert(vmk_getinfo(L, "lS", ar));
-    vmk_call(L, 2, 0);  /* call hook fn */
+    vmk_call(L, 2, 0);  /* call hook function */
   }
 }
 
@@ -385,7 +385,7 @@ static int db_sethook (vmk_State *L) {
   }
   checkstack(L, L1, 1);
   vmk_pushthread(L1); vmk_xmove(L1, L, 1);  /* key (thread) */
-  vmk_pushvalue(L, arg + 1);  /* value (hook fn) */
+  vmk_pushvalue(L, arg + 1);  /* value (hook function) */
   vmk_rawset(L, -3);  /* hooktable[L1] = new Vmk hook */
   vmk_sethook(L1, func, mask, count);
   return 0;

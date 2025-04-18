@@ -167,21 +167,21 @@ typedef struct stringtable {
 ** About union 'u2':
 ** - field 'funcidx' is used only by C functions while doing a
 ** protected call;
-** - field 'nyield' is used only while a fn is "doing" an
+** - field 'nyield' is used only while a function is "doing" an
 ** yield (from the yield until the next resume);
 ** - field 'nres' is used only while closing tbc variables when
-** returning from a fn;
+** returning from a function;
 ** - field 'transferinfo' is used only during call/returnhooks,
-** before the fn starts or after it ends.
+** before the function starts or after it ends.
 */
 struct CallInfo {
-  StkIdRel func;  /* fn index in the stack */
-  StkIdRel	top;  /* top for this fn */
+  StkIdRel func;  /* function index in the stack */
+  StkIdRel	top;  /* top for this function */
   struct CallInfo *previous, *next;  /* dynamic call link */
   union {
     struct {  /* only for Vmk functions */
       const Instruction *savedpc;
-      volatile l_signalT trap;  /* fn is tracing lines/counts */
+      volatile l_signalT trap;  /* function is tracing lines/counts */
       int nextraargs;  /* # of extra arguments in vararg functions */
     } l;
     struct {  /* only for C functions */
@@ -191,7 +191,7 @@ struct CallInfo {
     } c;
   } u;
   union {
-    int funcidx;  /* called-fn index */
+    int funcidx;  /* called-function index */
     int nyield;  /* number of values yielded */
     int nres;  /* number of values returned */
     struct {  /* info about transferred values (for call/return hooks) */
@@ -199,7 +199,7 @@ struct CallInfo {
       unsigned short ntransfer;  /* number of values transferred */
     } transferinfo;
   } u2;
-  short nresults;  /* expected number of results from this fn */
+  short nresults;  /* expected number of results from this function */
   unsigned short callstatus;
 };
 
@@ -208,15 +208,15 @@ struct CallInfo {
 ** Bits in CallInfo status
 */
 #define CIST_OAH	(1<<0)	/* original value of 'allowhook' */
-#define CIST_C		(1<<1)	/* call is running a C fn */
+#define CIST_C		(1<<1)	/* call is running a C function */
 #define CIST_FRESH	(1<<2)	/* call is on a fresh "vmkV_execute" frame */
 #define CIST_HOOKED	(1<<3)	/* call is running a debug hook */
 #define CIST_YPCALL	(1<<4)	/* doing a yieldable protected call */
 #define CIST_TAIL	(1<<5)	/* call was tail called */
 #define CIST_HOOKYIELD	(1<<6)	/* last hook called yielded */
-#define CIST_FIN	(1<<7)	/* fn "called" a finalizer */
+#define CIST_FIN	(1<<7)	/* function "called" a finalizer */
 #define CIST_TRAN	(1<<8)	/* 'ci' has transfer information */
-#define CIST_CLSRET	(1<<9)  /* fn is closing tbc variables */
+#define CIST_CLSRET	(1<<9)  /* function is closing tbc variables */
 /* Bits 10-12 are used for CIST_RECST (see below) */
 #define CIST_RECST	10
 #if defined(VMK_COMPAT_LT_LE)
@@ -237,7 +237,7 @@ struct CallInfo {
                                                   | ((st) << CIST_RECST)))
 
 
-/* active fn is a Vmk fn */
+/* active function is a Vmk function */
 #define isVmk(ci)	(!((ci)->callstatus & CIST_C))
 
 /* call is running Vmk code (not a hook) */
@@ -252,12 +252,12 @@ struct CallInfo {
 ** 'global state', shared by all threads of this state
 */
 typedef struct global_State {
-  vmk_Alloc frealloc;  /* fn to reallocate memory */
+  vmk_Alloc frealloc;  /* function to reallocate memory */
   void *ud;         /* auxiliary data to 'frealloc' */
   l_mem totalbytes;  /* number of bytes currently allocated - GCdebt */
   l_mem GCdebt;  /* bytes allocated not yet compensated by the collector */
   lu_mem GCestimate;  /* an estimate of the non-garbage memory in use */
-  lu_mem lastatomic;  /* see fn 'genstep' in file 'lgc.c' */
+  lu_mem lastatomic;  /* see function 'genstep' in file 'lgc.c' */
   stringtable strt;  /* hash table for strings */
   TValue l_registry;
   TValue nilvalue;  /* a nil value */
@@ -298,7 +298,7 @@ typedef struct global_State {
   TString *tmname[TM_N];  /* array with tag-method names */
   struct Table *mt[VMK_NUMTYPES];  /* metatables for basic types */
   TString *strcache[STRCACHE_N][STRCACHE_M];  /* cache for strings in API */
-  vmk_WarnFunction warnf;  /* warning fn */
+  vmk_WarnFunction warnf;  /* warning function */
   void *ud_warn;         /* auxiliary data to 'warnf' */
 } global_State;
 
@@ -313,7 +313,7 @@ struct vmk_State {
   unsigned short nci;  /* number of items in 'ci' list */
   StkIdRel top;  /* first free slot in the stack */
   global_State *l_G;
-  CallInfo *ci;  /* call info for current fn */
+  CallInfo *ci;  /* call info for current function */
   StkIdRel stack_last;  /* end of stack (last element + 1) */
   StkIdRel stack;  /* stack base */
   UpVal *openupval;  /* list of open upvalues in this stack */
@@ -323,7 +323,7 @@ struct vmk_State {
   struct vmk_longjmp *errorJmp;  /* current error recover point */
   CallInfo base_ci;  /* CallInfo for first level (C calling Vmk) */
   volatile vmk_Hook hook;
-  ptrdiff_t errfunc;  /* current error handling fn (stack index) */
+  ptrdiff_t errfunc;  /* current error handling function (stack index) */
   l_uint32 nCcalls;  /* number of nested (non-yieldable | C)  calls */
   int oldpc;  /* last pc traced */
   int basehookcount;

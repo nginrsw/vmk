@@ -102,7 +102,7 @@ UpVal *vmkF_findupval (vmk_State *L, StkId level) {
 /*
 ** Call closing method for object 'obj' with error message 'err'. The
 ** boolean 'yy' controls whether the call is yieldable.
-** (This fn assumes EXTRA_STACK.)
+** (This function assumes EXTRA_STACK.)
 */
 static void callclosemethod (vmk_State *L, TValue *obj, TValue *err, int yy) {
   StkId top = L->top.p;
@@ -110,7 +110,7 @@ static void callclosemethod (vmk_State *L, TValue *obj, TValue *err, int yy) {
   setobj2s(L, top, tm);  /* will call metamethod... */
   setobj2s(L, top + 1, obj);  /* with 'self' as the 1st argument */
   setobj2s(L, top + 2, err);  /* and error msg. as 2nd argument */
-  L->top.p = top + 3;  /* add fn and arguments */
+  L->top.p = top + 3;  /* add function and arguments */
   if (yy)
     vmkD_call(L, top, 0);
   else
@@ -277,7 +277,7 @@ void vmkF_freeproto (vmk_State *L, Proto *f) {
 
 
 /*
-** Look for n-th own variable at line 'line' in fn 'func'.
+** Look for n-th local variable at line 'line' in function 'func'.
 ** Returns NULL if not found.
 */
 const char *vmkF_getlocalname (const Proto *f, int local_number, int pc) {

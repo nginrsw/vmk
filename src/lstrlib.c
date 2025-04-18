@@ -209,7 +209,7 @@ static int str_char (vmk_State *L) {
 
 /*
 ** Buffer to store the result of 'string.dump'. It must be initialized
-** after the call to 'vmk_dump', to ensure that the fn is on the
+** after the call to 'vmk_dump', to ensure that the function is on the
 ** top of the stack when 'vmk_dump' is called. ('vmkL_buffinit' might
 ** push stuff.)
 */
@@ -234,10 +234,10 @@ static int str_dump (vmk_State *L) {
   struct str_Writer state;
   int strip = vmk_toboolean(L, 2);
   vmkL_checktype(L, 1, VMK_TFUNCTION);
-  vmk_settop(L, 1);  /* ensure fn is on the top of the stack */
+  vmk_settop(L, 1);  /* ensure function is on the top of the stack */
   state.init = 0;
   if (l_unlikely(vmk_dump(L, writer, &state, strip) != 0))
-    return vmkL_error(L, "unable to dump given fn");
+    return vmkL_error(L, "unable to dump given function");
   vmkL_pushresult(&state.B);
   return 1;
 }
@@ -369,7 +369,7 @@ typedef struct MatchState {
 } MatchState;
 
 
-/* recursive fn */
+/* recursive function */
 static const char *match (MatchState *ms, const char *s, const char *p);
 
 
@@ -907,9 +907,9 @@ static int add_value (MatchState *ms, vmkL_Buffer *b, const char *s,
                                       const char *e, int tr) {
   vmk_State *L = ms->L;
   switch (tr) {
-    case VMK_TFUNCTION: {  /* call the fn */
+    case VMK_TFUNCTION: {  /* call the function */
       int n;
-      vmk_pushvalue(L, 3);  /* push the fn */
+      vmk_pushvalue(L, 3);  /* push the function */
       n = push_captures(ms, s, e);  /* all captures as arguments */
       vmk_call(L, n, 1);  /* call it */
       break;
@@ -953,7 +953,7 @@ static int str_gsub (vmk_State *L) {
   vmkL_Buffer b;
   vmkL_argexpected(L, tr == VMK_TNUMBER || tr == VMK_TSTRING ||
                    tr == VMK_TFUNCTION || tr == VMK_TTABLE, 3,
-                      "string/fn/table");
+                      "string/function/table");
   vmkL_buffinit(L, &b);
   if (anchor) {
     p++; lp--;  /* skip anchor character */

@@ -26,8 +26,8 @@
 
 #include "lprefix.h"
 
-
 #include <stddef.h>
+#include <string.h>  /* Ditambahkan untuk strcmp */
 
 #include "vmk.h"
 
@@ -59,6 +59,16 @@ VMKLIB_API void vmkL_openlibs (vmk_State *L) {
   /* "require" functions from 'loadedlibs' and set results to global table */
   for (lib = loadedlibs; lib->func; lib++) {
     vmkL_requiref(L, lib->name, lib->func, 1);
+	if (strcmp(lib->name, VMK_STRLIBNAME) == 0) {
+       vmk_getglobal(L, "str");
+       if (vmk_isnil(L, -1)) {  /* Jika 'str' belum ada */
+         vmk_pop(L, 1);
+         vmk_pushvalue(L, -1);
+         vmk_setglobal(L, "str");
+       } else {
+         vmk_pop(L, 1);  /* Jangan timpa 'str' yang sudah ada */
+       }
+    }
     vmk_pop(L, 1);  /* remove lib */
   }
 }

@@ -14,7 +14,7 @@
 #define pcRel(pc, p)	(cast_int((pc) - (p)->code) - 1)
 
 
-/* Active Vmk fn (given call info) */
+/* Active Vmk function (given call info) */
 #define ci_func(ci)		(clLvalue(s2v((ci)->func.p)))
 
 

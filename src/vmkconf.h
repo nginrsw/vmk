@@ -223,7 +223,7 @@
 
 #else			/* }{ */
 
-#define VMK_ROOT	"/usr/own/"
+#define VMK_ROOT	"/usr/local/"
 #define VMK_LDIR	VMK_ROOT "share/vmk/" VMK_VDIR "/"
 #define VMK_CDIR	VMK_ROOT "lib/vmk/" VMK_VDIR "/"
 
@@ -260,7 +260,7 @@
 
 /*
 ** VMK_IGMARK is a mark to ignore all after it when building the
-** module name (e.g., used to build the vmkopen_ fn name).
+** module name (e.g., used to build the vmkopen_ function name).
 ** Typically, the suffix after the mark is the module version,
 ** as in "mod-v1.2.so".
 */
@@ -762,7 +762,7 @@
 
 /*
 @@ VMK_IDSIZE gives the maximum size for the description of the source
-** of a fn in debug information.
+** of a function in debug information.
 ** CHANGE it if you want a different size.
 */
 #define VMK_IDSIZE	60
